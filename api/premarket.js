@@ -19,13 +19,13 @@ export default async function handler(req, res) {
     const data = await r.json();
     const q = Array.isArray(data) ? data[0] : data;
     if (!q) {
-      res.status(200).json({ bidPrice: null, askPrice: null });
+      res.status(404).json({ error: 'no extended-hours quote available' });
       return;
     }
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate=30');
     res.status(200).json({
-      symbol: q.symbol ?? symbol,
+      symbol: q.symbol,
       bidPrice: q.bidPrice ?? null,
       bidSize: q.bidSize ?? null,
       askPrice: q.askPrice ?? null,
