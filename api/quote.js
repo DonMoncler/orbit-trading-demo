@@ -1,4 +1,3 @@
-// redeploy trigger v2 - FMP_API_KEY confirmed saved in Vercel
 export default async function handler(req, res) {
   const { symbols } = req.query;
   const apiKey = process.env.FMP_API_KEY;
@@ -11,20 +10,23 @@ export default async function handler(req, res) {
     return;
   }
   try {
-    const url = `https://financialmodelingprep.com/api/v3/quote/${encodeURIComponent(symbols)}?apikey=${apiKey}`;
-    const r = await fetch(url);
-    if (!r.ok) {
-      res.status(502).json({ error: `upstream status ${r.status}` });
-      return;
-    }
-    const results = await r.json();
-    if (!Array.isArray(results)) {
-      res.status(502).json({ error: 'unexpected upstream response', raw: results });
-      return;
-    }
+    const symbolList = symbols.split(',').map(s => s.trim()).filter(Boolean);
+    const fetches = symbolList.map(async (sym) => {
+      const url = `https://financialmodelingprep.com/stable/quote?symbol=${encodeURIComponent(sym)}&apikey=${apiKey}`;
+      const r = await fetch(url);
+      if (!r.ok) return { sym, ok: false, status: r.status };
+      const data = await r.json();
+      const q = Array.isArray(data) ? data[0] : data;
+      return { sym, ok: true, q };
+    });
+    const results = await Promise.all(fetches);
     const out = {};
-    for (const q of results) {
-      out[q.symbol] = {
+    let upstreamError = null;
+    for (const r of results) {
+      if (!r.ok) { upstreamError = r.status; continue; }
+      const q = r.q;
+      if (!q) continue;
+      out[r.sym] = {
         price: q.price ?? null,
         open: q.open ?? null,
         previousClose: q.previousClose ?? null,
@@ -42,6 +44,10 @@ export default async function handler(req, res) {
         changePercent: q.changesPercentage ?? null,
         asOf: new Date().toISOString()
       };
+    }
+    if (Object.keys(out).length === 0 && upstreamError) {
+      res.status(502).json({ error: `upstream status ${upstreamError}` });
+      return;
     }
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Cache-Control', 's-maxage=20, stale-while-revalidate=60');
