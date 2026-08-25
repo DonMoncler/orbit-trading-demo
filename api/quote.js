@@ -1,4 +1,4 @@
-// redeploy trigger
+// redeploy trigger v2 - FMP_API_KEY confirmed saved in Vercel
 export default async function handler(req, res) {
   const { symbols } = req.query;
   const apiKey = process.env.FMP_API_KEY;
