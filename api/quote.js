@@ -43,6 +43,9 @@ export default async function handler(req, res) {
           if (metric['10DayAverageTradingVolume'] != null) q.volume = metric['10DayAverageTradingVolume'] * 1e6;
           if (metric['3MonthAverageTradingVolume'] != null) q.avgVolume = metric['3MonthAverageTradingVolume'] * 1e6;
           if (metric.dividendIndicatedAnnual != null && q.price) q.divYield = metric.dividendIndicatedAnnual / q.price;
+          if (metric.revenuePerShareTTM != null) q.revenuePerShareTTM = metric.revenuePerShareTTM;
+          if (metric.netProfitMarginTTM != null) q.netMarginTTM = metric.netProfitMarginTTM;
+          if (metric.grossMarginTTM != null) q.grossMarginTTM = metric.grossMarginTTM;
         }
       }
       if (q) quotes[sym] = q;
