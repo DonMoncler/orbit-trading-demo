@@ -3,285 +3,308 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ORBIT — Beginner-Friendly Stock Research</title>
+<title>ORBIT — Instrument</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg1:#fdf3ec;--bg2:#f1e8fb;--bg3:#e8f6f0;
-  --ink:#241f2b;--muted:#7c7488;--line:rgba(36,31,43,.08);
-  --coral:#ff8a65;--coralDeep:#f4603a;--violet:#8b7ff0;--violetDeep:#6e5fe0;
-  --mint:#38c9a3;--mintDeep:#1fa885;--amber:#f5a623;--red:#ef5a6f;
-  --card:rgba(255,255,255,.72);--cardSolid:#ffffff;--shadow:0 20px 50px rgba(110,95,224,.12);
-  --radius:22px
+  --paper:#f2f0ea;--paper2:#e9e6dc;--paper3:#dedad0;
+  --ink:#14140f;--ink2:#4a4740;--ink3:#84806f;
+  --line:rgba(20,20,15,.14);--lineStrong:rgba(20,20,15,.32);
+  --signal:#ff4d1c;--pos:#2f6f4e;--neg:#a13327;
+  --mono:'JetBrains Mono',ui-monospace,monospace;--sans:'Space Grotesk',sans-serif
 }
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;color:var(--ink);
-  font-family:'Manrope','Sora',Segoe UI,Arial,sans-serif;
-  background:
-    radial-gradient(900px 600px at 8% -8%, rgba(255,138,101,.20), transparent 60%),
-    radial-gradient(1000px 700px at 95% 0%, rgba(139,127,240,.20), transparent 55%),
-    radial-gradient(900px 700px at 50% 110%, rgba(56,201,163,.18), transparent 55%),
-    linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 55%,var(--bg3) 100%);
-  background-attachment:fixed;
-}
-a{color:var(--violetDeep);text-decoration:none}
-.wrap{max-width:1320px;margin:0 auto;padding:0 28px}
-.topbar{position:sticky;top:0;z-index:30;backdrop-filter:blur(14px);background:rgba(255,255,255,.55);
-  border-bottom:1px solid rgba(255,255,255,.6)}
-.topbarIn{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:16px 0}
-.brand{display:flex;align-items:center;gap:11px}
-.orb{width:34px;height:34px;border-radius:50%;
-  background:conic-gradient(from 200deg,var(--coral),var(--violet),var(--mint),var(--coral));
-  box-shadow:0 0 0 4px rgba(255,255,255,.6),0 8px 20px rgba(139,127,240,.35)}
-.brand b{font-family:'Sora',sans-serif;font-size:17px;letter-spacing:.02em;color:var(--ink)}
-.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:.14em;margin-top:1px}
-.navPill{display:flex;gap:4px;background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.7);
-  border-radius:999px;padding:5px}
-.navPill button{all:unset;cursor:pointer;padding:9px 16px;border-radius:999px;font-size:12.5px;
-  font-weight:700;color:var(--muted);transition:.15s}
-.navPill button.active{background:linear-gradient(135deg,var(--violet),var(--violetDeep));color:#fff;
-  box-shadow:0 6px 16px rgba(110,95,224,.35)}
-.navPill button:hover:not(.active){color:var(--ink)}
-main{padding:34px 0 80px}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--mono);font-size:12px;
+  background-image:
+    linear-gradient(var(--line) 1px,transparent 1px),
+    linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:64px 64px;background-attachment:fixed}
+a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--lineStrong)}
+a:hover{border-color:var(--signal);color:var(--signal)}
+::selection{background:var(--ink);color:var(--paper)}
+
+.sysStrip{position:sticky;top:0;z-index:50;height:34px;background:var(--ink);color:var(--paper);
+  display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase}
+.sysStrip .grp{display:flex;align-items:center;gap:18px}
+.liveDotSys{width:6px;height:6px;border-radius:50%;background:var(--signal);
+  box-shadow:0 0 0 2px rgba(255,77,28,.25);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+.shell{display:grid;grid-template-columns:64px 1fr;min-height:100vh}
+.rail{position:sticky;top:34px;height:calc(100vh - 34px);border-right:1px solid var(--lineStrong);
+  display:flex;flex-direction:column;align-items:center;padding:20px 0;background:var(--paper)}
+.railLogo{writing-mode:vertical-rl;font-family:var(--sans);font-weight:700;font-size:13px;
+  letter-spacing:.3em;margin-bottom:40px;color:var(--ink)}
+.railNav{display:flex;flex-direction:column;gap:2px;flex:1}
+.railBtn{all:unset;width:64px;height:64px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:6px;cursor:pointer;border-left:2px solid transparent;color:var(--ink3)}
+.railBtn .idx{font-size:9px;letter-spacing:.05em}
+.railBtn .lbl{writing-mode:vertical-rl;font-size:9px;letter-spacing:.12em;text-transform:uppercase}
+.railBtn.active{color:var(--ink);border-left-color:var(--signal);background:var(--paper2)}
+.railBtn:hover:not(.active){color:var(--ink)}
+.railFoot{font-size:8px;color:var(--ink3);writing-mode:vertical-rl;letter-spacing:.1em;margin-top:20px}
+
+main{padding:40px 48px 100px;max-width:1400px}
 .view{display:none}
 .view.active{display:block}
-.hero{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:26px;flex-wrap:wrap}
-.eyebrow{font-size:11px;font-weight:800;letter-spacing:.16em;color:var(--violetDeep);text-transform:uppercase}
-.hero h1{font-family:'Sora',sans-serif;font-size:34px;font-weight:700;margin:8px 0 6px;letter-spacing:-.02em;color:var(--ink)}
-.hero p{margin:0;color:var(--muted);font-size:13.5px;max-width:600px}
-.pillTag{background:var(--cardSolid);border:1px solid var(--line);border-radius:999px;padding:9px 15px;
-  font-size:11px;font-weight:700;color:var(--muted);box-shadow:var(--shadow)}
-.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:30px}
-.statCard{background:var(--card);border:1px solid rgba(255,255,255,.7);border-radius:var(--radius);
-  padding:20px;box-shadow:var(--shadow);cursor:pointer;transition:.18s;position:relative;overflow:hidden}
-.statCard:hover{transform:translateY(-4px);box-shadow:0 26px 60px rgba(110,95,224,.2)}
-.statCard .tickerRow{display:flex;justify-content:space-between;align-items:center}
-.statCard b.tk{font-family:'Sora',sans-serif;font-size:16px;letter-spacing:.02em}
-.dot{width:8px;height:8px;border-radius:50%}
-.dot.up{background:var(--mint);box-shadow:0 0 10px rgba(56,201,163,.6)}
-.dot.down{background:var(--red);box-shadow:0 0 10px rgba(239,90,111,.6)}
-.statCard .co{color:var(--muted);font-size:11px;margin-top:2px}
-.statCard .px{font-family:'Sora',sans-serif;font-size:26px;margin-top:14px;font-weight:700}
-.chgPill{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:11.5px;font-weight:800;
-  padding:4px 10px;border-radius:999px}
-.chgPill.up{background:rgba(56,201,163,.16);color:var(--mintDeep)}
-.chgPill.down{background:rgba(239,90,111,.14);color:#c23a4d}
-.section{margin-bottom:28px}
-.sectionHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px}
-.sectionHead h2{font-family:'Sora',sans-serif;font-size:18px;margin:0;font-weight:700}
-.sectionHead p{margin:2px 0 0;color:var(--muted);font-size:12px}
-.card{background:var(--card);border:1px solid rgba(255,255,255,.7);border-radius:var(--radius);
-  box-shadow:var(--shadow)}
-.cardHead{display:flex;justify-content:space-between;gap:12px;padding:20px 22px;border-bottom:1px solid rgba(36,31,43,.06)}
-.cardHead h3{margin:0;font-family:'Sora',sans-serif;font-size:15px;font-weight:700}
-.cardHead p{margin:4px 0 0;font-size:11.5px;color:var(--muted)}
-.pad{padding:22px}
-.tabs2{display:flex;gap:8px;flex-wrap:wrap}
-.tab2{border:1px solid var(--line);background:rgba(255,255,255,.6);padding:9px 15px;border-radius:999px;
-  font-size:11.5px;font-weight:700;color:var(--muted);cursor:pointer}
-.tab2.active{background:linear-gradient(135deg,var(--coral),var(--coralDeep));color:#fff;border-color:transparent;
-  box-shadow:0 8px 18px rgba(244,96,58,.3)}
-.badge{font-size:10px;font-weight:800;letter-spacing:.08em;padding:6px 11px;border-radius:999px;height:max-content}
-.badge.mint{background:rgba(56,201,163,.15);color:var(--mintDeep)}
-.badge.violet{background:rgba(139,127,240,.15);color:var(--violetDeep)}
-.badge.amber{background:rgba(245,166,35,.16);color:#b5760f}
-.badge.coral{background:rgba(255,138,101,.18);color:var(--coralDeep)}
-.thead2,.row2{display:grid;grid-template-columns:34px 1.5fr 100px 90px 80px;gap:10px;align-items:center}
-.thead2{padding:8px 22px;font-size:10px;color:var(--muted);letter-spacing:.08em;font-weight:800}
-.rows2{padding:0 12px 12px}
-.row2{padding:13px 10px;border-radius:16px;cursor:pointer;transition:.15s}
-.row2:hover{background:rgba(139,127,240,.08)}
-.rank2{font-size:11px;color:var(--muted);text-align:center;font-weight:700}
-.tkCell b{font-family:'Sora',sans-serif;font-size:13.5px}
-.tkCell span{display:block;color:var(--muted);font-size:10.5px;margin-top:2px;white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis}
-.openArrow{font-size:11px;color:var(--violetDeep);font-weight:800;text-align:right}
-.btn{display:inline-flex;align-items:center;gap:6px;border:0;cursor:pointer;font-weight:800;font-size:12px;
-  padding:11px 18px;border-radius:999px;text-decoration:none}
-.btn.primary{background:linear-gradient(135deg,var(--violet),var(--violetDeep));color:#fff;
-  box-shadow:0 10px 22px rgba(110,95,224,.35)}
-.btn.coral{background:linear-gradient(135deg,var(--coral),var(--coralDeep));color:#fff;
-  box-shadow:0 10px 22px rgba(244,96,58,.3)}
-.btn.ghost{background:rgba(255,255,255,.7);color:var(--ink);border:1px solid var(--line)}
-.btn.mint{background:linear-gradient(135deg,var(--mint),var(--mintDeep));color:#fff;
-  box-shadow:0 10px 22px rgba(31,168,133,.3)}
-.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
-.actionRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
-.back2{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:12px;
-  color:var(--violetDeep);margin-bottom:16px}
-.stockHead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:18px}
-.stockTitle{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
-.stockTitle h1{font-family:'Sora',sans-serif;font-size:28px;margin:0}
-.stockTitle .sym{color:var(--violetDeep)}
-.stockPrice{font-family:'Sora',sans-serif;font-size:22px;font-weight:700}
-.chartWrap2{border-radius:18px;overflow:hidden;height:420px;background:#14121b}
-.chartWrap2 iframe{width:100%;height:100%;border:0}
-.numbers2{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.numCard{background:rgba(255,255,255,.65);border:1px solid var(--line);border-radius:16px;padding:14px}
-.numCard span{display:block;font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.04em}
-.numCard b{display:block;font-family:'Sora',sans-serif;font-size:18px;margin-top:6px}
-.numCard b.down{color:#c23a4d}.numCard b.up{color:var(--mintDeep)}
-.tip3{display:inline-flex;width:15px;height:15px;border-radius:50%;background:rgba(139,127,240,.18);
-  color:var(--violetDeep);font-size:9px;align-items:center;justify-content:center;cursor:help;margin-left:5px;
-  position:relative;font-weight:800}
-.tip3::after{content:attr(data-tip);display:none;position:absolute;left:50%;bottom:135%;transform:translateX(-50%);
-  width:220px;max-width:70vw;background:var(--ink);color:#fff;padding:10px 12px;border-radius:12px;font-size:10.5px;
-  line-height:1.5;font-weight:500;z-index:80;box-shadow:0 14px 30px rgba(0,0,0,.25);text-align:left}
-.tip3:hover::after,.tip3.on::after{display:block}
-.flagBox{border-radius:16px;padding:14px 16px;margin-bottom:10px;font-size:12px}
-.flagBox.warn{background:rgba(245,166,35,.13);border:1px solid rgba(245,166,35,.35)}
-.flagBox.warn b{color:#a86608;display:block;font-size:10.5px;letter-spacing:.06em;margin-bottom:4px}
-.flagBox.good{background:rgba(56,201,163,.13);border:1px solid rgba(56,201,163,.35)}
-.flagBox.good b{color:var(--mintDeep)}
-.checkItem2{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(36,31,43,.06)}
-.checkItem2:last-child{border-bottom:0}
-.checkIcon2{width:22px;height:22px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-weight:800;margin-top:1px}
-.checkIcon2.ok{background:rgba(56,201,163,.18);color:var(--mintDeep)}
-.checkIcon2.bad{background:rgba(239,90,111,.16);color:#c23a4d}
-.checkIcon2.mid{background:rgba(139,127,240,.16);color:var(--violetDeep)}
-.checkItem2 b{display:block;font-size:12.5px}
-.checkItem2 p{margin:3px 0 0;color:var(--muted);font-size:11.5px}
-.newsItem2{padding:13px 0;border-bottom:1px solid rgba(36,31,43,.06)}
-.newsItem2:last-child{border-bottom:0}
-.newsItem2 a{font-weight:700;font-size:12.5px;color:var(--ink);display:block;line-height:1.4}
-.newsItem2 a:hover{color:var(--violetDeep)}
-.newsMeta2{display:flex;gap:10px;font-size:10px;color:var(--muted);margin-top:5px;font-weight:700}
-.metricline2{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;
-  border-bottom:1px solid rgba(36,31,43,.06);font-size:12px}
-.emptyState2{padding:20px 4px;color:var(--muted);font-size:12px}
-.lessonCard{background:rgba(255,255,255,.65);border-left:4px solid var(--violet);border-radius:14px;padding:14px 16px;font-size:12.5px;color:#3b3546}
-.lessonCard b{color:var(--ink);display:block;margin-bottom:4px}
-.inputGrid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
-.inputGrid2 label{font-size:10px;color:var(--muted);font-weight:700}
-.inputGrid2 input,.inputGrid2 select{width:100%;padding:10px;border:1px solid var(--line);border-radius:12px;
-  margin-top:5px;background:#fff;color:var(--ink);font-size:13px}
-textarea.j{width:100%;min-height:150px;border:1px solid var(--line);border-radius:14px;padding:14px;
-  font-family:inherit;font-size:13px;background:#fff;color:var(--ink)}
-.planItem2{border:1px solid var(--line);border-radius:18px;margin-bottom:14px;overflow:hidden;background:rgba(255,255,255,.6)}
-.planItemHead2{display:flex;justify-content:space-between;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}
-.status2{font-size:10px;font-weight:700;border:1px solid var(--line);border-radius:10px;padding:6px 8px;background:#fff}
-.ladder2{border:1px solid var(--line);border-radius:16px;padding:14px;background:rgba(255,255,255,.65)}
-.rung2{display:grid;grid-template-columns:8px 1fr auto;gap:10px;align-items:center;border-bottom:1px solid var(--line);
-  padding:10px 0;font-size:12px}
-.rung2:last-child{border-bottom:0}
-.bar2{width:5px;height:28px;border-radius:4px;background:var(--line)}
-.rung2.t .bar2{background:var(--mint)}
-.rung2.e .bar2{background:var(--violet)}
-.rung2.s .bar2{background:var(--red)}
-.moreDataLock{padding:36px 20px;text-align:center;color:var(--muted);font-size:12.5px}
-.small{font-size:10.5px;color:var(--muted)}
-.layout2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,.9fr);gap:18px}
-.col2{display:grid;gap:18px;align-content:start}
-@media(max-width:1100px){.grid5{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:900px){.layout2{grid-template-columns:1fr}.numbers2{grid-template-columns:1fr 1fr}}
-@media(max-width:650px){.grid5{grid-template-columns:1fr 1fr}.wrap{padding:0 16px}.hero h1{font-size:26px}
-  .thead2{display:none}.row2{grid-template-columns:26px 1fr 70px}.row2 .hideSm{display:none}}
+
+.hdr{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;margin-bottom:8px;
+  padding-bottom:18px;border-bottom:1px solid var(--lineStrong)}
+.hdr .tag{font-size:9px;letter-spacing:.18em;color:var(--ink3);text-transform:uppercase;margin-bottom:10px}
+.hdr h1{font-family:var(--sans);font-size:32px;font-weight:700;margin:0;letter-spacing:-.01em;line-height:1.05}
+.hdr .sub{font-size:11px;color:var(--ink2);margin-top:8px;max-width:560px;line-height:1.6}
+.coord{font-size:10px;color:var(--ink3);text-align:right;letter-spacing:.05em}
+.coord b{display:block;color:var(--ink);font-size:12px;margin-top:3px}
+
+.section{margin-top:36px}
+.secHead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;
+  padding-bottom:8px;border-bottom:1px solid var(--line)}
+.secHead h2{font-family:var(--sans);font-size:15px;font-weight:700;margin:0;text-transform:uppercase;letter-spacing:.03em}
+.secHead .note{font-size:9px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase}
+
+.panel{position:relative;border:1px solid var(--line);padding:20px}
+.panel::before,.panel::after{content:'';position:absolute;width:9px;height:9px;border-color:var(--ink);
+  border-style:solid;opacity:0;transition:opacity .15s}
+.panel::before{top:-1px;left:-1px;border-width:1px 0 0 1px}
+.panel::after{bottom:-1px;right:-1px;border-width:0 1px 1px 0}
+.panel:hover::before,.panel:hover::after{opacity:1}
+.panelHead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;
+  padding-bottom:10px;border-bottom:1px solid var(--line)}
+.panelHead h3{font-family:var(--sans);font-size:13px;font-weight:700;margin:0;text-transform:uppercase;letter-spacing:.02em}
+.panelHead .desc{font-size:9.5px;color:var(--ink3);margin-top:3px}
+.stat{font-size:9px;letter-spacing:.08em;color:var(--ink3);text-transform:uppercase}
+.stat.live{color:var(--signal)}
+
+.rows{display:flex;flex-direction:column}
+.instRow{display:grid;grid-template-columns:36px 1fr 70px 90px 70px;gap:14px;align-items:center;
+  padding:14px 4px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .1s}
+.instRow:hover{background:var(--paper2)}
+.instRow .idxn{color:var(--ink3);font-size:10px}
+.instRow .tkr{font-family:var(--sans);font-weight:700;font-size:14px}
+.instRow .co{color:var(--ink3);font-size:9.5px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.instRow .px{font-variant-numeric:tabular-nums;font-weight:700;text-align:right}
+.instRow .chg{font-variant-numeric:tabular-nums;text-align:right}
+.chg.pos{color:var(--pos)}.chg.neg{color:var(--neg)}
+.trace{width:60px;height:24px}
+.trace path{fill:none;stroke:var(--ink3);stroke-width:1.2}
+.trace.pos path{stroke:var(--pos)}.trace.neg path{stroke:var(--neg)}
+
+.grid5{display:grid;grid-template-columns:repeat(5,1fr)}
+.instCard{border:1px solid var(--line);border-left:none;padding:18px 16px;cursor:pointer;position:relative}
+.instCard:first-child{border-left:1px solid var(--line)}
+.instCard:hover{background:var(--paper2)}
+.instCard .rowtop{display:flex;justify-content:space-between;align-items:baseline}
+.instCard .tkr{font-family:var(--sans);font-weight:700;font-size:15px}
+.instCard .idxn{font-size:9px;color:var(--ink3)}
+.instCard .co{font-size:9px;color:var(--ink3);margin-top:4px}
+.instCard .px{font-variant-numeric:tabular-nums;font-weight:700;font-size:22px;margin-top:14px}
+.instCard .chg{font-variant-numeric:tabular-nums;font-size:11px;margin-top:6px}
+
+.btn{all:unset;display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-family:var(--mono);
+  font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:10px 16px;border:1px solid var(--ink);
+  color:var(--ink)}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn.signal{border-color:var(--signal);color:var(--signal)}
+.btn.signal:hover{background:var(--signal);color:var(--paper)}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.btn.solid:hover{background:var(--signal);border-color:var(--signal)}
+.btnRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+
+.tabRow{display:flex;gap:0;border-bottom:1px solid var(--lineStrong);margin-bottom:20px}
+.tabBtn{all:unset;cursor:pointer;padding:10px 18px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink3);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabBtn.active{color:var(--ink);border-color:var(--signal)}
+.tabBtn:hover:not(.active){color:var(--ink)}
+
+.layout{display:grid;grid-template-columns:1.6fr 1px .9fr;gap:0}
+.layout .divider{background:var(--lineStrong)}
+.layout .colL{padding-right:28px}
+.layout .colR{padding-left:28px}
+.stack{display:flex;flex-direction:column;gap:24px}
+
+.numGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.numCell{background:var(--paper);padding:14px}
+.numCell .lbl{font-size:8.5px;letter-spacing:.08em;color:var(--ink3);text-transform:uppercase}
+.numCell .val{font-variant-numeric:tabular-nums;font-weight:700;font-size:16px;margin-top:6px}
+.numCell .val.pos{color:var(--pos)}.numCell .val.neg{color:var(--neg)}
+
+.tip{display:inline-flex;width:11px;height:11px;border:1px solid var(--ink3);border-radius:50%;
+  font-size:7px;align-items:center;justify-content:center;margin-left:4px;cursor:help;position:relative;color:var(--ink3)}
+.tip::after{content:attr(data-tip);display:none;position:absolute;left:0;bottom:130%;width:200px;
+  background:var(--ink);color:var(--paper);padding:9px 10px;font-size:9.5px;line-height:1.5;z-index:60;text-transform:none;letter-spacing:0}
+.tip:hover::after,.tip.on::after{display:block}
+
+.flagLine{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);font-size:10.5px}
+.flagLine:last-child{border-bottom:0}
+.flagMark{width:14px;flex:none;font-size:9px;font-weight:700;letter-spacing:0}
+.flagMark.warn{color:var(--signal)}.flagMark.ok{color:var(--pos)}
+.flagLine b{display:block;font-size:9.5px;letter-spacing:.05em;text-transform:uppercase}
+.flagLine p{margin:3px 0 0;color:var(--ink2);font-size:10px;line-height:1.5}
+
+.chkLine{display:grid;grid-template-columns:36px 1fr;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.chkLine:last-child{border-bottom:0}
+.chkMark{font-size:9px;font-weight:700;color:var(--ink3)}
+.chkMark.ok{color:var(--pos)}.chkMark.bad{color:var(--neg)}
+.chkLine b{display:block;font-size:10.5px}
+.chkLine p{margin:3px 0 0;color:var(--ink2);font-size:10px;line-height:1.5}
+
+.newsLine{padding:12px 0;border-bottom:1px solid var(--line)}
+.newsLine:last-child{border-bottom:0}
+.newsLine a{font-size:11px;font-weight:600;display:block;line-height:1.4;border:0;color:var(--ink)}
+.newsLine a:hover{color:var(--signal)}
+.newsMeta{font-size:8.5px;color:var(--ink3);margin-top:5px;letter-spacing:.05em;text-transform:uppercase}
+
+.lessonLine{padding:14px 0;border-bottom:1px solid var(--line)}
+.lessonLine:last-child{border-bottom:0}
+.lessonLine b{display:block;font-family:var(--sans);font-size:11.5px;margin-bottom:5px}
+.lessonLine p{margin:0;color:var(--ink2);font-size:10.5px;line-height:1.6}
+
+.inputRow{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:1px}
+.inputCell{background:var(--paper);padding:10px 12px}
+.inputCell label{display:block;font-size:8px;letter-spacing:.08em;color:var(--ink3);text-transform:uppercase;margin-bottom:6px}
+.inputCell input,.inputCell select{width:100%;border:0;background:transparent;font-family:var(--mono);
+  font-size:12px;color:var(--ink);padding:0;font-variant-numeric:tabular-nums}
+.inputCell input:focus,.inputCell select:focus{outline:none}
+
+.ladderLine{display:grid;grid-template-columns:50px 1fr auto;gap:10px;align-items:center;padding:10px 0;
+  border-bottom:1px solid var(--line);font-size:10.5px}
+.ladderLine:last-child{border-bottom:0}
+.ladderLine .k{font-size:8.5px;letter-spacing:.08em;color:var(--ink3);text-transform:uppercase}
+.ladderLine .v{font-variant-numeric:tabular-nums;font-weight:700;text-align:right}
+
+textarea.j{width:100%;min-height:140px;border:1px solid var(--line);padding:12px;font-family:var(--mono);
+  font-size:11px;background:var(--paper);color:var(--ink);resize:vertical}
+textarea.j:focus{outline:none;border-color:var(--ink)}
+
+.planBlock{border:1px solid var(--line);margin-bottom:16px}
+.planBlockHead{display:flex;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line)}
+.selectStatus{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.05em;
+  border:1px solid var(--line);background:var(--paper);padding:6px 8px}
+
+.lock{padding:60px 20px;text-align:center;color:var(--ink3);font-size:11px;line-height:1.7}
+.lock b{display:block;font-family:var(--sans);font-size:14px;color:var(--ink);margin-bottom:8px;text-transform:none}
+
+.chartFrame{border:1px solid var(--line);height:420px;background:#0b0a08}
+.chartFrame iframe{width:100%;height:100%;border:0}
+
+.empty{padding:24px 4px;color:var(--ink3);font-size:11px}
+
+@media(max-width:1100px){.grid5{grid-template-columns:repeat(3,1fr)}.instCard:nth-child(4){border-left:1px solid var(--line)}}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.layout .divider{display:none}.layout .colL,.layout .colR{padding:0}
+  .numGrid{grid-template-columns:1fr 1fr}}
+@media(max-width:650px){.shell{grid-template-columns:1fr}.rail{display:none}main{padding:24px 16px 80px}
+  .grid5{grid-template-columns:1fr 1fr}.instCard:nth-child(2n+1){border-left:1px solid var(--line)}
+  .hdr h1{font-size:24px}.instRow{grid-template-columns:24px 1fr 60px}.instRow .trace,.instRow .chg{display:none}}
 </style>
 </head>
 <body>
-<div class="topbar"><div class="wrap topbarIn">
-  <div class="brand"><div class="orb"></div><div><b>ORBIT</b><small>BEGINNER STOCK RESEARCH</small></div></div>
-  <nav class="navPill" id="navPill">
-    <button class="active" data-view="dashboard">Dashboard</button>
-    <button data-view="screener">Screener</button>
-    <button data-view="plans">My Plans</button>
-    <button data-view="journal">Journal</button>
-    <button data-view="learn">Learn</button>
-  </nav>
-</div></div>
 
-<main class="wrap">
+<div class="sysStrip">
+  <div class="grp"><span class="liveDotSys"></span><span id="sysClock">00:00:00 UTC</span></div>
+  <div class="grp"><span>ORBIT / RESEARCH INSTRUMENT</span><span id="sysSession">SESSION 000000</span></div>
+</div>
 
-  <section class="view active" id="dashboard">
-    <div class="hero">
-      <div><div class="eyebrow">ORBIT / STOCK DASHBOARD</div>
-        <h1>Five stocks. Real numbers. Zero overwhelm.</h1>
-        <p>We're starting small on purpose. These five names are well known and easy to learn on — pick one, then tap <b>More Data</b> for the full beginner breakdown: plain English, red flags, and a step-by-step checklist.</p>
+<div class="shell">
+  <aside class="rail">
+    <div class="railLogo">ORBIT</div>
+    <nav class="railNav" id="railNav">
+      <button class="railBtn active" data-view="dashboard"><span class="idx">01</span><span class="lbl">DASHBOARD</span></button>
+      <button class="railBtn" data-view="screener"><span class="idx">02</span><span class="lbl">SCREENER</span></button>
+      <button class="railBtn" data-view="plans"><span class="idx">03</span><span class="lbl">PLANS</span></button>
+      <button class="railBtn" data-view="journal"><span class="idx">04</span><span class="lbl">JOURNAL</span></button>
+      <button class="railBtn" data-view="learn"><span class="idx">05</span><span class="lbl">LEARN</span></button>
+    </nav>
+    <div class="railFoot">v2 / BEGINNER MODE</div>
+  </aside>
+
+  <main>
+
+    <section class="view active" id="dashboard">
+      <div class="hdr">
+        <div><div class="tag">Instrument / 01 — Dashboard</div>
+          <h1>Five instruments.<br>Full resolution.</h1>
+          <p class="sub">A deliberately narrow aperture. Five widely covered companies, tracked at full depth, so the signal stays legible. Everything you see here is live.</p>
+        </div>
+        <div class="coord" id="dashCoord">LAT 00.0000<br>LON 00.0000<b id="dashDate">—</b></div>
       </div>
-      <div class="pillTag" id="dashDate">LIVE DATA</div>
-    </div>
-    <div class="grid5" id="dashCards"></div>
-    <div class="card section" style="padding:2px">
-      <div class="cardHead"><div><h3>Why only 5 stocks?</h3><p>A deliberate choice, not a limitation.</p></div><span class="badge violet">BY DESIGN</span></div>
-      <div class="pad" style="font-size:12.5px;color:#4b445a;line-height:1.6">
-        Beginners drown when a screener throws hundreds of unfamiliar tickers at them. ORBIT starts with five large, heavily covered companies — <b>Apple, Microsoft, NVIDIA, Amazon, and Alphabet</b> — so the data is reliable and the lessons transfer. Want more movers? The <b>Screener</b> tab still scans the real market live.
+      <div class="section">
+        <div class="secHead"><h2>Tracked Instruments</h2><span class="note" id="dashStat">5 / 5 ONLINE</span></div>
+        <div class="grid5" id="dashCards"></div>
       </div>
-    </div>
-  </section>
-
-  <section class="view" id="screener">
-    <div class="hero">
-      <div><div class="eyebrow">ORBIT / LIVE SCREENER</div>
-        <h1>Real market screener.</h1>
-        <p>Every candidate below is a real mover pulled from today's actual market data.</p>
+      <div class="section panel">
+        <div class="panelHead"><div><h3>Aperture Note</h3><p class="desc">Why the set is constrained to five.</p></div><span class="stat">BY DESIGN</span></div>
+        <p style="font-size:11px;color:var(--ink2);line-height:1.7;margin:0">A wide screener drowns a new operator in signal it can't yet interpret. This instrument narrows to five heavily-covered companies — <b>AAPL · MSFT · NVDA · AMZN · GOOGL</b> — so the data stays reliable and every lesson transfers. Instrument 02 still scans the full live market.</p>
       </div>
-      <div class="pillTag" id="snapTime">SNAPSHOT LOADING…</div>
-    </div>
-    <div class="tabs2" style="margin-bottom:16px">
-      <button class="tab2 active" data-list="gainer">Top Gainers</button>
-      <button class="tab2" data-list="loser">Top Losers</button>
-      <button class="tab2" data-list="active">Most Active</button>
-      <button class="tab2" id="smallCapToggle" style="margin-left:auto">Small Cap Only (&lt;$2B)</button>
-    </div>
-    <div class="layout2">
-      <section class="card">
-        <div class="cardHead"><div><h3 id="screenTitle">TOP GAINERS TODAY</h3><p id="screenSub">Real US stocks with the largest price increases today.</p></div><span class="badge mint">LIVE</span></div>
-        <div class="thead2" style="margin-top:10px"><div></div><div>COMPANY</div><div>MOVE</div><div class="hideSm">SCORE</div><div></div></div>
-        <div id="cards" class="rows2"></div>
-      </section>
-      <aside class="card"><div id="detail" class="pad"></div></aside>
-    </div>
-  </section>
+    </section>
 
-  <section class="view" id="plans">
-    <div class="hero"><div><div class="eyebrow">ORBIT / MY PLANS</div><h1>My levels and trade plans.</h1>
-      <p>Plans are stored locally in this browser.</p></div>
-      <div class="pillTag">FREE · UP TO 3 PLANS</div></div>
-    <div id="plansList"></div>
-  </section>
-
-  <section class="view" id="journal">
-    <div class="hero"><div><div class="eyebrow">ORBIT / TRADE JOURNAL</div><h1>Record the process.</h1>
-      <p>Notes are stored locally in your browser. Plan saves and status changes auto-log here too.</p></div></div>
-    <div class="card">
-      <div class="cardHead"><div><h3>Journal Entry</h3><p>Thesis, execution, and review notes.</p></div><span class="badge violet" id="saveStatus">SAVED</span></div>
-      <div class="pad">
-        <textarea class="j" id="journalText" placeholder="Write your session notes here..."></textarea>
-        <div class="actionRow"><button class="btn primary" id="saveJournal">Save Entry</button><button class="btn ghost" id="clearJournal">Clear</button></div>
+    <section class="view" id="screener">
+      <div class="hdr">
+        <div><div class="tag">Instrument / 02 — Screener</div>
+          <h1>Live market scan.</h1>
+          <p class="sub">Every row below is a real mover, pulled from today's market. Not curated, not simulated.</p>
+        </div>
+        <div class="coord" id="snapTime">SNAPSHOT<br>LOADING<b>—</b></div>
       </div>
-    </div>
-  </section>
-
-  <section class="view" id="learn">
-    <div class="hero"><div><div class="eyebrow">ORBIT / LEARN</div><h1>Stock market basics.</h1>
-      <p>Short lessons plus outside video resources — useful whether you're brand new or brushing up fundamentals.</p></div></div>
-    <div class="card section">
-      <div class="cardHead"><div><h3>Core Lessons</h3><p>Read these before opening the Plan Builder.</p></div><span class="badge mint">BEGINNER FRIENDLY</span></div>
-      <div class="pad" style="display:grid;gap:12px">
-        <div class="lessonCard"><b>1. What is a stock?</b>A stock is a small ownership slice of a company. When you buy shares, you're betting the company's value rises over time, or that it pays you dividends.</div>
-        <div class="lessonCard"><b>2. How to read a candlestick</b>Each candle shows the open, high, low, and close price for a period. Green usually means it closed higher than it opened; red means lower.</div>
-        <div class="lessonCard"><b>3. Support and resistance</b>Support is a price level where buying has historically stepped in. Resistance is where selling has capped rallies.</div>
-        <div class="lessonCard"><b>4. Order types</b><b style="display:inline">Market order</b> fills immediately. <b style="display:inline">Limit order</b> only fills at your price or better. <b style="display:inline">Stop order</b> triggers a market order once a price is hit.</div>
-        <div class="lessonCard"><b>5. Risk, reward, and position size</b>Most professional traders risk only 1–2% of their account per trade. ORBIT's Plan Builder flags any plan risking more than that.</div>
-        <div class="lessonCard"><b>6. Trading psychology</b>Decide your entry, stop, and target before you enter — not while emotions are running. Journal every trade.</div>
+      <div class="tabRow">
+        <button class="tabBtn active" data-list="gainer">GAINERS</button>
+        <button class="tabBtn" data-list="loser">LOSERS</button>
+        <button class="tabBtn" data-list="active">MOST ACTIVE</button>
+        <button class="tabBtn" id="smallCapToggle" style="margin-left:auto">SMALL CAP &lt;$2B</button>
       </div>
-    </div>
-    <div class="card">
-      <div class="cardHead"><div><h3>Video Resources</h3><p>Curated external searches and channels. Opens in a new tab — ORBIT doesn't host this content.</p></div><span class="badge coral">EXTERNAL</span></div>
-      <div class="pad" style="display:grid;gap:2px">
-        <div class="metricline2"><span>Stock market basics for beginners</span><a class="btn ghost" href="https://www.youtube.com/results?search_query=stock+market+basics+for+beginners" target="_blank" rel="noopener noreferrer">Watch ↗</a></div>
-        <div class="metricline2"><span>How to read candlestick charts</span><a class="btn ghost" href="https://www.youtube.com/results?search_query=how+to+read+candlestick+charts+for+beginners" target="_blank" rel="noopener noreferrer">Watch ↗</a></div>
-        <div class="metricline2"><span>Risk management and position sizing</span><a class="btn ghost" href="https://www.youtube.com/results?search_query=risk+management+position+sizing+trading" target="_blank" rel="noopener noreferrer">Watch ↗</a></div>
-        <div class="metricline2"><span>Investopedia (channel)</span><a class="btn ghost" href="https://www.youtube.com/@Investopedia" target="_blank" rel="noopener noreferrer">Open ↗</a></div>
+      <div class="layout">
+        <div class="colL">
+          <div class="secHead"><h2 id="screenTitle">TOP GAINERS</h2><span class="note" id="screenSub"></span></div>
+          <div class="rows" id="cards"></div>
+        </div>
+        <div class="divider"></div>
+        <div class="colR"><div id="detail"></div></div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section class="view" id="stockPage"></section>
+    <section class="view" id="plans">
+      <div class="hdr"><div><div class="tag">Instrument / 03 — Plans</div><h1>Stored trade plans.</h1>
+        <p class="sub">Held locally in this browser. Free tier: three plans.</p></div></div>
+      <div class="section" id="plansList"></div>
+    </section>
 
-</main>
+    <section class="view" id="journal">
+      <div class="hdr"><div><div class="tag">Instrument / 04 — Journal</div><h1>Session log.</h1>
+        <p class="sub">Notes are stored locally. Plan saves and status changes append automatically.</p></div></div>
+      <div class="section panel">
+        <div class="panelHead"><div><h3>Entry</h3><p class="desc">Thesis, execution, review.</p></div><span class="stat" id="saveStatus">SAVED</span></div>
+        <textarea class="j" id="journalText" placeholder="// session notes"></textarea>
+        <div class="btnRow"><button class="btn solid" id="saveJournal">SAVE</button><button class="btn" id="clearJournal">CLEAR</button></div>
+      </div>
+    </section>
+
+    <section class="view" id="learn">
+      <div class="hdr"><div><div class="tag">Instrument / 05 — Learn</div><h1>Operating manual.</h1>
+        <p class="sub">Core concepts before you touch the Plan Builder.</p></div></div>
+      <div class="section panel">
+        <div class="panelHead"><div><h3>Core Concepts</h3></div><span class="stat">6 MODULES</span></div>
+        <div class="lessonLine"><b>01 — What is a stock?</b><p>A small ownership slice of a company. You're betting its value rises over time, or that it pays dividends.</p></div>
+        <div class="lessonLine"><b>02 — Reading a candlestick</b><p>Each candle shows open, high, low, close for a period. Green closed higher than it opened; red closed lower.</p></div>
+        <div class="lessonLine"><b>03 — Support and resistance</b><p>Support: where buying has historically stepped in. Resistance: where selling has capped rallies.</p></div>
+        <div class="lessonLine"><b>04 — Order types</b><p>Market: fills now. Limit: fills at your price or better. Stop: becomes a market order once triggered.</p></div>
+        <div class="lessonLine"><b>05 — Risk and position size</b><p>Professionals risk 1–2% per trade. The Plan Builder flags anything above that threshold.</p></div>
+        <div class="lessonLine"><b>06 — Psychology</b><p>Decide entry, stop, target before you enter — not while a position is open and emotions run.</p></div>
+      </div>
+      <div class="section panel">
+        <div class="panelHead"><div><h3>External References</h3><p class="desc">Opens in a new tab. ORBIT does not control this content.</p></div></div>
+        <div class="newsLine"><a href="https://www.youtube.com/results?search_query=stock+market+basics+for+beginners" target="_blank" rel="noopener noreferrer">Stock market basics for beginners →</a></div>
+        <div class="newsLine"><a href="https://www.youtube.com/results?search_query=how+to+read+candlestick+charts+for+beginners" target="_blank" rel="noopener noreferrer">How to read candlestick charts →</a></div>
+        <div class="newsLine"><a href="https://www.youtube.com/results?search_query=risk+management+position+sizing+trading" target="_blank" rel="noopener noreferrer">Risk management and position sizing →</a></div>
+        <div class="newsLine"><a href="https://www.youtube.com/@Investopedia" target="_blank" rel="noopener noreferrer">Investopedia (channel) →</a></div>
+      </div>
+    </section>
+
+    <section class="view" id="stockPage"></section>
+
+  </main>
+</div>
 <script>
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -289,32 +312,40 @@ const usd=n=>n==null||isNaN(n)?'—':'$'+Number(n).toFixed(2);
 const fmtPct=n=>n==null||isNaN(n)?'—':(n>=0?'+':'')+Number(n).toFixed(2)+'%';
 const fmtCap=n=>{n=Number(n);if(!n)return'N/A';const a=Math.abs(n);if(a>=1e12)return'$'+(n/1e12).toFixed(2)+'T';if(a>=1e9)return'$'+(n/1e9).toFixed(2)+'B';if(a>=1e6)return'$'+(n/1e6).toFixed(2)+'M';return'$'+n.toFixed(0)};
 const fmtVol=n=>{n=Number(n);if(!n)return'N/A';if(Math.abs(n)>=1e9)return(n/1e9).toFixed(2)+'B';if(Math.abs(n)>=1e6)return(n/1e6).toFixed(2)+'M';if(Math.abs(n)>=1e3)return(n/1e3).toFixed(1)+'K';return String(n)};
-const ago=ts=>{if(!ts)return'';const s=Date.now()/1000-ts;const h=Math.floor(s/3600);if(h<1)return'just now';if(h<24)return h+'h ago';return Math.floor(h/24)+'d ago'};
-const SNAPSHOT_TIME=new Date().toLocaleDateString('en-US',{year:'numeric',month:'2-digit',day:'2-digit'})+" · Live market data fetch";
+const ago=ts=>{if(!ts)return'';const s=Date.now()/1000-ts;const h=Math.floor(s/3600);if(h<1)return'NOW';if(h<24)return h+'H AGO';return Math.floor(h/24)+'D AGO'};
+const SNAPSHOT_TIME=new Date().toLocaleDateString('en-US',{year:'numeric',month:'2-digit',day:'2-digit'});
 const FIXED_SYMBOLS=['AAPL','MSFT','NVDA','AMZN','GOOGL'];
 
+function traceSvg(low,high,cur,cls){
+  if(low==null||high==null||high<=low)return '<svg class="trace '+cls+'" viewBox="0 0 60 24"><path d="M0 12 L60 12"/></svg>';
+  const pos=(v)=>24-((v-low)/(high-low))*20-2;
+  const pts=[0,15,30,45,60].map((x,i)=>{const t=i/4;const v=low+(cur-low)*t+ (Math.sin(t*6)*(high-low)*0.05);return [x,pos(Math.max(low,Math.min(high,v)))]});
+  pts[pts.length-1][1]=pos(cur);
+  const d='M'+pts.map(p=>p[0]+' '+p[1].toFixed(1)).join(' L ');
+  return '<svg class="trace '+cls+'" viewBox="0 0 60 24"><path d="'+d+'"/></svg>';
+}
+
 const COMPANY_INFO={
-AAPL:{sector:'Technology',industry:'Consumer Electronics',desc:"Apple Inc. designs, manufactures, and markets iPhone, Mac, iPad, and wearables, alongside services like the App Store, iCloud, and Apple Pay. Headquartered in Cupertino, California."},
-MSFT:{sector:'Technology',industry:'Software - Infrastructure',desc:"Microsoft Corporation develops Windows, Office, Azure cloud services, LinkedIn, GitHub, and Xbox gaming, serving both consumers and enterprises worldwide. Headquartered in Redmond, Washington."},
-NVDA:{sector:'Technology',industry:'Semiconductors',desc:"NVIDIA Corporation designs GPUs and AI computing platforms across gaming, data center AI, and automotive. Founded in 1993 and headquartered in Santa Clara, California."},
-AMZN:{sector:'Consumer Cyclical',industry:'Internet Retail',desc:"Amazon.com, Inc. operates online retail marketplaces, Amazon Web Services (cloud computing), advertising, and subscription services like Prime. Headquartered in Seattle, Washington."},
-GOOGL:{sector:'Communication Services',industry:'Internet Content & Information',desc:"Alphabet Inc. is the parent of Google, generating most revenue from search and display advertising, plus YouTube, Google Cloud, and Android. Headquartered in Mountain View, California."},
-INTC:{sector:'Technology',industry:'Semiconductors',desc:"Intel Corporation designs and manufactures CPUs, data center chips, and foundry services. Headquartered in Santa Clara, California."},
-MRNA:{sector:'Healthcare',industry:'Biotechnology',desc:"Moderna, Inc. develops mRNA-based vaccines and therapies, including its COVID-19 and RSV vaccine programs. Headquartered in Cambridge, Massachusetts."},
-DKS:{sector:'Consumer Cyclical',industry:'Specialty Retail',desc:"DICK'S Sporting Goods, Inc. is a major American sporting goods retailer."},
-GRRR:{sector:'Technology',industry:'Software - Infrastructure',desc:"Gorilla Technology Group Inc. provides AI-driven security, network, and IoT solutions."},
-PLUG:{sector:'Industrials',industry:'Electrical Equipment & Parts',desc:"Plug Power Inc. provides hydrogen and fuel cell solutions."},
-RZLV:{sector:'Technology',industry:'Software - Application',desc:"Rezolve AI PLC provides AI technologies for retailers and brands."},
-BMNR:{sector:'Financial Services',industry:'Financial - Capital Markets',desc:"Bitmine Immersion Technologies, Inc. manages an Ethereum treasury and Bitcoin ecosystem services."},
-SPCX:{sector:'Industrials',industry:'Aerospace & Defense',desc:"Space Exploration Technologies Corp. (SpaceX) designs, manufactures, and launches rockets and satellites."}
+AAPL:{sector:'Technology',industry:'Consumer Electronics',desc:"Designs iPhone, Mac, iPad, and wearables, plus App Store, iCloud, and Apple Pay. Cupertino, California."},
+MSFT:{sector:'Technology',industry:'Software Infrastructure',desc:"Windows, Office, Azure cloud, LinkedIn, GitHub, Xbox. Redmond, Washington."},
+NVDA:{sector:'Technology',industry:'Semiconductors',desc:"GPUs and AI compute platforms across gaming, data center, and automotive. Santa Clara, California."},
+AMZN:{sector:'Consumer Cyclical',industry:'Internet Retail',desc:"Online retail, AWS cloud computing, advertising, and Prime subscriptions. Seattle, Washington."},
+GOOGL:{sector:'Communication Services',industry:'Internet Content',desc:"Parent of Google — search and display ads, YouTube, Cloud, Android. Mountain View, California."},
+INTC:{sector:'Technology',industry:'Semiconductors',desc:"CPUs, data center chips, foundry services. Santa Clara, California."},
+MRNA:{sector:'Healthcare',industry:'Biotechnology',desc:"mRNA vaccines and therapies including COVID-19 and RSV programs. Cambridge, Massachusetts."},
+DKS:{sector:'Consumer Cyclical',industry:'Specialty Retail',desc:"Major American sporting goods retailer."},
+GRRR:{sector:'Technology',industry:'Software Infrastructure',desc:"AI-driven security, network, and IoT solutions."},
+PLUG:{sector:'Industrials',industry:'Electrical Equipment',desc:"Hydrogen and fuel cell solutions."},
+RZLV:{sector:'Technology',industry:'Software Application',desc:"AI technologies for retailers and brands."},
+BMNR:{sector:'Financial Services',industry:'Capital Markets',desc:"Ethereum treasury and Bitcoin ecosystem services."},
+SPCX:{sector:'Industrials',industry:'Aerospace & Defense',desc:"SpaceX — rockets, spacecraft, and satellite broadband."}
 };
-const COMPANY_FIN={};
 const LISTS={gainer:[{s:'RZLV',company:'Rezolve AI PLC',price:2.95,pct:21.50,chg:0.52},{s:'OESX',company:'Orion Energy Systems, Inc.',price:25.36,pct:20.80,chg:4.37},{s:'CRML',company:'Critical Metals Corp.',price:8.01,pct:20.01,chg:1.33},{s:'GENB',company:'Generate Biomedicines, Inc.',price:20.90,pct:17.95,chg:3.18},{s:'EXOD',company:'Exodus Movement, Inc.',price:9.25,pct:17.83,chg:1.40},{s:'ABCL',company:'AbCellera Biologics Inc.',price:12.46,pct:17.43,chg:1.85},{s:'MEI',company:'Methode Electronics, Inc.',price:16.35,pct:16.54,chg:2.32},{s:'PACB',company:'Pacific Biosciences of California, Inc.',price:1.48,pct:15.23,chg:0.20},{s:'CAPR',company:'Capricor Therapeutics, Inc.',price:7.79,pct:14.56,chg:0.99},{s:'SLNH',company:'Soluna Holdings, Inc.',price:1.30,pct:13.97,chg:0.16}],
 loser:[{s:'FVN',company:'Future Vision II Acquisition Corp.',price:12.25,pct:-38.26,chg:-7.59},{s:'DKS',company:"DICK'S Sporting Goods, Inc.",price:128.83,pct:-28.16,chg:-50.50},{s:'SHMD',company:'SCHMID Group N.V.',price:3.65,pct:-24.85,chg:-1.21},{s:'AIAI',company:'AIAI Holdings Corporation',price:4.67,pct:-12.05,chg:-0.64},{s:'GRRR',company:'Gorilla Technology Group Inc.',price:14.19,pct:-10.39,chg:-1.65}],
 active:[{s:'RZLV',company:'Rezolve AI PLC',price:2.95,pct:21.50,chg:0.52},{s:'NVDA',company:'NVIDIA Corporation',price:211.84,pct:1.61,chg:3.36},{s:'INTC',company:'Intel Corp.',price:88.36,pct:1.26,chg:1.10},{s:'BMNR',company:'Bitmine Immersion Technologies, Inc.',price:25.33,pct:4.93,chg:1.19},{s:'SPCX',company:'Space Exploration Technologies Corp.',price:138.72,pct:2.76,chg:3.72},{s:'MRNA',company:'Moderna, Inc.',price:156.72,pct:12.84,chg:17.83},{s:'PLUG',company:'Plug Power Inc.',price:2.26,pct:4.15,chg:0.09}]};
-const LIST_LABELS={gainer:{title:'TOP GAINERS TODAY',sub:'Real US stocks with the largest price increases today.',stat:'Gainers'},loser:{title:'TOP LOSERS TODAY',sub:'Real US stocks with the largest price declines today.',stat:'Losers'},active:{title:'MOST ACTIVE TODAY',sub:'Real US stocks with the largest absolute price moves today.',stat:'Most Active'}};
+const LIST_LABELS={gainer:{title:'TOP GAINERS',sub:'Largest price increases today.',stat:'Gainers'},loser:{title:'TOP LOSERS',sub:'Largest price declines today.',stat:'Losers'},active:{title:'MOST ACTIVE',sub:'Largest absolute moves today.',stat:'Most Active'}};
 const MARKET_CAP={RZLV:1188506196,OESX:100724633,CRML:1155750047,GENB:2524110010,EXOD:299478024,ABCL:3798712313,MEI:568612954,PACB:466213134,CAPR:457784657,SLNH:196395456,FVN:73176800,DKS:10768898095,SHMD:223297461,AIAI:305690072,GRRR:348092302,NVDA:5129281170000,INTC:441904817835,BMNR:14179614846,SPCX:1810680467081,MRNA:62636637960,PLUG:3127328419};
-const SCAN_NAMES={RZLV:'Rezolve AI PLC',OESX:'Orion Energy Systems, Inc.',CRML:'Critical Metals Corp.',GENB:'Generate Biomedicines, Inc.',EXOD:'Exodus Movement, Inc.',ABCL:'AbCellera Biologics Inc.',MEI:'Methode Electronics, Inc.',PACB:'Pacific Biosciences of California, Inc.',CAPR:'Capricor Therapeutics, Inc.',SLNH:'Soluna Holdings, Inc.',FVN:'Future Vision II Acquisition Corp.',SHMD:'SCHMID Group N.V.',AIAI:'AIAI Holdings Corporation',GRRR:'Gorilla Technology Group Inc.',NVDA:'NVIDIA Corporation',INTC:'Intel Corp.',BMNR:'Bitmine Immersion Technologies, Inc.',SPCX:'Space Exploration Technologies Corp.',MRNA:'Moderna, Inc.',PLUG:'Plug Power Inc.',AAPL:'Apple Inc.',MSFT:'Microsoft Corporation',AMZN:'Amazon.com, Inc.',GOOGL:'Alphabet Inc.',TSLA:'Tesla, Inc.',SOFI:'SoFi Technologies, Inc.',PLTR:'Palantir Technologies Inc.',COIN:'Coinbase Global, Inc.'};
+const SCAN_NAMES={RZLV:'Rezolve AI PLC',OESX:'Orion Energy Systems, Inc.',CRML:'Critical Metals Corp.',GENB:'Generate Biomedicines, Inc.',EXOD:'Exodus Movement, Inc.',ABCL:'AbCellera Biologics Inc.',MEI:'Methode Electronics, Inc.',PACB:'Pacific Biosciences of California, Inc.',CAPR:'Capricor Therapeutics, Inc.',SLNH:'Soluna Holdings, Inc.',FVN:'Future Vision II Acquisition Corp.',SHMD:'SCHMID Group N.V.',AIAI:'AIAI Holdings Corporation',GRRR:'Gorilla Technology Group Inc.',NVDA:'NVIDIA Corporation',INTC:'Intel Corp.',BMNR:'Bitmine Immersion Technologies, Inc.',SPCX:'Space Exploration Technologies Corp.',MRNA:'Moderna, Inc.',PLUG:'Plug Power Inc.',AAPL:'Apple Inc.',MSFT:'Microsoft Corporation',AMZN:'Amazon.com, Inc.',GOOGL:'Alphabet Inc.'};
 
 let scanData=null,ESTIMATED_FIN={},smallCapOnly=false,currentList='gainer',stocks=[],plans=[];
 try{plans=JSON.parse(localStorage.getItem('orbitPlans')||'[]')}catch(e){}
@@ -322,29 +353,34 @@ try{plans=JSON.parse(localStorage.getItem('orbitPlans')||'[]')}catch(e){}
 function bias(pct){if(pct>0.15)return'UP';if(pct<-0.15)return'DOWN';return'FLAT'}
 function score(pct){return Math.min(99,Math.round(Math.abs(pct)*1.8)+20)}
 function math(e,s,t1,t2,risk,side){let u=Math.abs(e-s),sgn=side==='SHORT'?-1:1,shares=u?Math.floor(risk/u):0,h=Math.floor(shares/2),rest=shares-h,p1=(t1-e)*sgn*h,p2=(t2-e)*sgn*rest;return{u,shares,h,rest,p1,p2,total:p1+p2,rr:u?Math.abs(t1-e)/u:0}}
-function links(x){let tv=encodeURIComponent(x.s);return `<div class="actionRow"><a class="btn ghost" href="https://www.tradingview.com/symbols/${tv}/" target="_blank" rel="noopener noreferrer">TradingView ↗</a><a class="btn ghost" href="https://finance.yahoo.com/quote/${tv}" target="_blank" rel="noopener noreferrer">Yahoo Finance ↗</a></div>`}
-function chgPillHtml(pct,chg){let up=(pct||0)>=0;return `<span class="chgPill ${up?'up':'down'}">${up?'▲':'▼'} ${usd(Math.abs(chg||0))} (${fmtPct(pct)})</span>`}
-function chartHtml(symbol,interval){interval=interval||'D';let src=`https://s.tradingview.com/widgetembed/?symbol=${encodeURIComponent(symbol)}&interval=${interval}&hidesidetoolbar=0&symboledit=1&saveimage=0&toolbarbg=f1ecff&studies=%5B%5D&theme=light&style=1&timezone=Etc%2FUTC`;return `<iframe src="${src}" allowtransparency="true" scrolling="no" loading="lazy" title="Live chart for ${symbol}"></iframe>`}
-function ladder(p){return `<div class="ladder2"><div class="small" style="font-weight:800;margin-bottom:8px">MY LEVELS / ${p.side} SCENARIO</div>
-<div class="rung2 t"><i class="bar2"></i><div><b>Target 2</b><div class="small">Higher exit level</div></div><b>${usd(p.t2)}</b></div>
-<div class="rung2 t"><i class="bar2"></i><div><b>Target 1</b><div class="small">First exit level</div></div><b>${usd(p.t1)}</b></div>
-<div class="rung2 e"><i class="bar2"></i><div><b>Entry</b><div class="small">Price you're watching</div></div><b>${usd(p.entry)}</b></div>
-<div class="rung2 s"><i class="bar2"></i><div><b>Stop</b><div class="small">Plan invalidation point</div></div><b>${usd(p.stop)}</b></div></div>`}
+function links(x){let tv=encodeURIComponent(x.s);return `<div class="btnRow"><a class="btn" href="https://www.tradingview.com/symbols/${tv}/" target="_blank" rel="noopener noreferrer" style="border-bottom:0">TRADINGVIEW ↗</a><a class="btn" href="https://finance.yahoo.com/quote/${tv}" target="_blank" rel="noopener noreferrer" style="border-bottom:0">YAHOO ↗</a></div>`}
+function chgTxt(pct,chg){let up=(pct||0)>=0;return `<span class="chg ${up?'pos':'neg'}">${up?'+':''}${usd(chg)} / ${fmtPct(pct)}</span>`}
+function chartHtml(symbol,interval){interval=interval||'D';let src=`https://s.tradingview.com/widgetembed/?symbol=${encodeURIComponent(symbol)}&interval=${interval}&hidesidetoolbar=0&symboledit=1&saveimage=0&toolbarbg=0b0a08&studies=%5B%5D&theme=dark&style=1&timezone=Etc%2FUTC`;return `<iframe src="${src}" allowtransparency="true" scrolling="no" loading="lazy" title="Chart ${symbol}"></iframe>`}
+function ladderHtml(p){return `<div>
+<div class="ladderLine"><span class="k">T2</span><span></span><span class="v">${usd(p.t2)}</span></div>
+<div class="ladderLine"><span class="k">T1</span><span></span><span class="v">${usd(p.t1)}</span></div>
+<div class="ladderLine"><span class="k">ENTRY</span><span></span><span class="v">${usd(p.entry)}</span></div>
+<div class="ladderLine"><span class="k">STOP</span><span></span><span class="v">${usd(p.stop)}</span></div></div>`}
 function appendJournal(line){let j=localStorage.getItem('orbitJournal')||'';j=j+(j?'\n':'')+line;localStorage.setItem('orbitJournal',j);let jt=$('journalText');if(jt)jt.value=j}
-function copyText(text,b){if(navigator.clipboard){navigator.clipboard.writeText(text).then(()=>{b.textContent='Copied';setTimeout(()=>b.textContent='Copy Levels',900)}).catch(()=>alert(text))}else alert(text)}
+function copyText(text,b){if(navigator.clipboard){navigator.clipboard.writeText(text).then(()=>{b.textContent='COPIED';setTimeout(()=>b.textContent='COPY LEVELS',900)}).catch(()=>alert(text))}else alert(text)}
 function savePlans(){try{localStorage.setItem('orbitPlans',JSON.stringify(plans))}catch(e){}}
-function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('.navPill button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));if(id==='plans')renderPlans();window.scrollTo(0,0)}
-document.querySelectorAll('.navPill button').forEach(b=>b.addEventListener('click',()=>show(b.dataset.view)));
+function show(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('.railBtn').forEach(b=>b.classList.toggle('active',b.dataset.view===id));if(id==='plans')renderPlans();window.scrollTo(0,0)}
+document.querySelectorAll('.railBtn').forEach(b=>b.addEventListener('click',()=>show(b.dataset.view)));
 
-// ---------- DASHBOARD (5 fixed stocks) ----------
-function dashCardHtml(x){let up=(x.pct||0)>=0;return `<div class="statCard" data-sym="${x.s}">
-  <div class="tickerRow"><b class="tk">${x.s}</b><span class="dot ${up?'up':'down'}"></span></div>
+function tick(){const d=new Date();$('sysClock').textContent=d.toUTCString().slice(17,25)+' UTC';}
+setInterval(tick,1000);tick();
+$('sysSession').textContent='SESSION '+Math.floor(Date.now()/1000).toString().slice(-6);
+$('dashCoord').innerHTML='LAT 37.3318<br>LON -122.0312<b id="dashDate">—</b>';
+
+// ---------- DASHBOARD ----------
+function dashCardHtml(x,i){let up=(x.pct||0)>=0;return `<div class="instCard" data-sym="${x.s}">
+  <div class="rowtop"><b class="tkr">${x.s}</b><span class="idxn">${String(i+1).padStart(2,'0')}</span></div>
   <div class="co">${esc(x.company)}</div>
   <div class="px">${usd(x.price)}</div>
-  ${chgPillHtml(x.pct,x.chg)}
+  <div class="chg ${up?'pos':'neg'}">${chgTxt(x.pct,x.chg)}</div>
 </div>`}
 function loadDashboard(){
-  $('dashDate').textContent=new Date().toLocaleDateString('en-US',{year:'numeric',month:'2-digit',day:'2-digit'})+' · LIVE DATA';
+  $('dashDate').textContent=new Date().toLocaleDateString('en-US',{year:'numeric',month:'2-digit',day:'2-digit'});
   fetch('/api/quote?symbols='+FIXED_SYMBOLS.join(',')).then(r=>r.json()).then(d=>{
     let qs=d&&d.quotes?d.quotes:{};
     let cards=FIXED_SYMBOLS.map(sym=>{
@@ -353,130 +389,126 @@ function loadDashboard(){
         stop=+(entry+(b==='DOWN'?riskUnit:-riskUnit)).toFixed(2),t1=+(entry+(b==='DOWN'?-riskUnit:riskUnit)).toFixed(2),t2=+(entry+(b==='DOWN'?-riskUnit*2:riskUnit*2)).toFixed(2);
       return {s:sym,company:SCAN_NAMES[sym]||sym,price:q.price,pct:q.changePercent,chg:q.change,full:q,bias:b,score:score(q.changePercent||0),entry,stop,t1,t2};
     });
-    $('dashCards').innerHTML=cards.map(dashCardHtml).join('');
-    document.querySelectorAll('#dashCards .statCard').forEach(el=>el.addEventListener('click',()=>{
-      let x=cards.find(c=>c.s===el.dataset.sym);openStock(x,'Dashboard');
+    $('dashCards').innerHTML=cards.map((x,i)=>dashCardHtml(x,i)).join('');
+    document.querySelectorAll('#dashCards .instCard').forEach(el=>el.addEventListener('click',()=>{
+      let x=cards.find(c=>c.s===el.dataset.sym);openStock(x,'DASHBOARD');
     }));
-  }).catch(()=>{$('dashCards').innerHTML='<div class="emptyState2">Could not load live quotes right now.</div>'});
+  }).catch(()=>{$('dashCards').innerHTML='<div class="empty">SIGNAL UNAVAILABLE</div>'});
 }
 
-// ---------- SCREENER (real gainers/losers/most active, unchanged logic) ----------
+// ---------- SCREENER ----------
 function buildListsFromScan(){let arr=Object.keys(scanData||{}).map(s=>{let q=scanData[s];return{s,company:SCAN_NAMES[s]||s,price:q.price,pct:q.changePercent,chg:q.change}}).filter(x=>x.price!=null&&x.pct!=null);if(!arr.length)return;LISTS.gainer=[...arr].sort((a,b)=>b.pct-a.pct).slice(0,12);LISTS.loser=[...arr].sort((a,b)=>a.pct-b.pct).slice(0,12);LISTS.active=[...arr].sort((a,b)=>Math.abs(b.pct)-Math.abs(a.pct)).slice(0,12)}
 function loadScanData(){fetch('/api/scan').then(r=>r.json()).then(d=>{scanData=d&&d.quotes?d.quotes:{};buildListsFromScan();loadList(currentList)}).catch(()=>{})}
 function loadList(list){currentList=list;let raw=LISTS[list],lbl=LIST_LABELS[list];
   if(smallCapOnly)raw=raw.filter(x=>{let mc=MARKET_CAP[x.s];return mc!=null&&mc<2e9});
   stocks=raw.map(x=>{let riskUnit=Math.max(x.price*0.02,Math.abs(x.chg)*0.5),b=bias(x.pct),entry=+x.price.toFixed(2),stop=+(entry+(b==='DOWN'?riskUnit:-riskUnit)).toFixed(2),t1=+(entry+(b==='DOWN'?-riskUnit:riskUnit)).toFixed(2),t2=+(entry+(b==='DOWN'?-riskUnit*2:riskUnit*2)).toFixed(2);return{...x,bias:b,score:score(x.pct),entry,stop,t1,t2}});
-  document.querySelectorAll('.tab2[data-list]').forEach(b=>b.classList.toggle('active',b.dataset.list===list));
-  $('screenTitle').textContent=lbl.title+(smallCapOnly?' (SMALL CAP)':'');
-  $('screenSub').textContent=lbl.sub+(smallCapOnly?' Filtered to companies under $2B market cap.':'');
-  if(!raw.length){$('cards').innerHTML='<div class="emptyState2">No stocks in this list match the filter right now.</div>';return}
+  document.querySelectorAll('.tabBtn[data-list]').forEach(b=>b.classList.toggle('active',b.dataset.list===list));
+  $('screenTitle').textContent=lbl.title+(smallCapOnly?' · SMALL CAP':'');
+  $('screenSub').textContent=lbl.sub;
+  if(!raw.length){$('cards').innerHTML='<div class="empty">NO MATCHES FOR THIS FILTER</div>';return}
   renderScreenerRows()
 }
 function renderScreenerRows(){
-  $('cards').innerHTML=stocks.map((x,i)=>`<article class="row2" data-index="${i}">
-    <div class="rank2">${String(i+1).padStart(2,'0')}</div>
-    <div class="tkCell"><b>${x.s}</b><span>${esc(x.company)}</span></div>
-    <div>${chgPillHtml(x.pct,x.chg)}</div>
-    <div class="hideSm"><span class="badge violet">${x.score}/100</span></div>
-    <div class="openArrow">OPEN →</div>
-  </article>`).join('');
-  document.querySelectorAll('#cards .row2').forEach(el=>el.addEventListener('click',()=>showScreenerDetail(stocks[Number(el.dataset.index)])));
+  $('cards').innerHTML=stocks.map((x,i)=>{
+    let up=(x.pct||0)>=0;
+    return `<article class="instRow" data-index="${i}">
+    <div class="idxn">${String(i+1).padStart(2,'0')}</div>
+    <div><div class="tkr">${x.s}</div><div class="co">${esc(x.company)}</div></div>
+    ${traceSvg(Math.min(x.entry,x.stop),Math.max(x.entry,x.stop),x.price,up?'pos':'neg')}
+    <div class="px">${usd(x.price)}</div>
+    <div class="chg ${up?'pos':'neg'}">${fmtPct(x.pct)}</div>
+  </article>`}).join('');
+  document.querySelectorAll('#cards .instRow').forEach(el=>el.addEventListener('click',()=>showScreenerDetail(stocks[Number(el.dataset.index)])));
   if(stocks.length)showScreenerDetail(stocks[0]);
 }
 function showScreenerDetail(x){
-  $('detail').innerHTML=`<div style="margin-bottom:14px"><b style="font-family:'Sora',sans-serif;font-size:19px">${x.s}</b><div class="small">${esc(x.company)}</div>
-  <div class="stockPrice" style="margin-top:10px">${usd(x.price)}</div>${chgPillHtml(x.pct,x.chg)}</div>
+  $('detail').innerHTML=`<div class="panel"><div class="panelHead"><div><h3>${x.s}</h3><p class="desc">${esc(x.company)}</p></div></div>
+  <div class="px" style="font-size:24px;margin-bottom:6px">${usd(x.price)}</div>${chgTxt(x.pct,x.chg)}
   ${links(x)}
-  <div class="actionRow"><button class="btn primary" id="openDetail">Open Full Detail</button></div>`;
-  $('openDetail').addEventListener('click',()=>openStock(x,LIST_LABELS[currentList].stat));
+  <div class="btnRow"><button class="btn solid" id="openDetail">OPEN FULL DETAIL</button></div></div>`;
+  $('openDetail').addEventListener('click',()=>openStock(x,LIST_LABELS[currentList].stat.toUpperCase()));
 }
 
-// ---------- STOCK DETAIL (Overview + More Data tabs) ----------
+// ---------- STOCK DETAIL ----------
 function financialsHtml(x){let e=ESTIMATED_FIN[x.s],tv=encodeURIComponent(x.s);
-  let outbound=`<div class="metricline2"><span>Full income statement, balance sheet, cash flow</span><a class="btn ghost" href="https://finance.yahoo.com/quote/${tv}/financials" target="_blank" rel="noopener noreferrer">Open ↗</a></div><div class="metricline2"><span>Key statistics</span><a class="btn ghost" href="https://finance.yahoo.com/quote/${tv}/key-statistics" target="_blank" rel="noopener noreferrer">Open ↗</a></div>`;
-  if(e&&e.revenue!=null){return `<div class="numbers2">
-    <div class="numCard"><span>REVENUE (TTM, EST.)</span><b>${fmtCap(e.revenue)}</b></div>
-    <div class="numCard"><span>NET INCOME (TTM, EST.)</span><b class="${e.netIncome<0?'down':'up'}">${e.netIncome!=null?fmtCap(e.netIncome):'N/A'}</b></div>
-    <div class="numCard"><span>NET MARGIN</span><b>${e.netMargin!=null?e.netMargin.toFixed(1)+'%':'N/A'}</b></div></div>
-    <p class="small" style="margin-top:10px">Estimated from live per-share and margin data (Finnhub), not official filings.</p>
-    <div style="display:grid;gap:2px;margin-top:10px">${outbound}</div>`}
-  return `<div style="display:grid;gap:2px">${outbound}</div>`}
-function companyOverviewHtml(x){let info=COMPANY_INFO[x.s];if(info)return `<div class="lessonCard"><b>${info.sector} — ${info.industry}</b>${info.desc}</div>`;
-  return `<div class="lessonCard">Detailed overview not yet in ORBIT's library for ${x.s}. <a href="https://finance.yahoo.com/quote/${encodeURIComponent(x.s)}/profile/" target="_blank" rel="noopener noreferrer">View on Yahoo Finance ↗</a></div>`}
-function newsLinksHtml(x){let tv=encodeURIComponent(x.s);return `<div style="display:grid;gap:2px">
-  <div class="metricline2"><span>Latest news on ${x.s} (Yahoo Finance)</span><a class="btn ghost" href="https://finance.yahoo.com/quote/${tv}/news" target="_blank" rel="noopener noreferrer">Read ↗</a></div>
-  <div class="metricline2"><span>Google News search</span><a class="btn ghost" href="https://news.google.com/search?q=${tv}%20stock" target="_blank" rel="noopener noreferrer">Read ↗</a></div></div>`}
+  let outbound=`<div class="newsLine"><a href="https://finance.yahoo.com/quote/${tv}/financials" target="_blank" rel="noopener noreferrer">Full financial statements →</a></div><div class="newsLine"><a href="https://finance.yahoo.com/quote/${tv}/key-statistics" target="_blank" rel="noopener noreferrer">Key statistics →</a></div>`;
+  if(e&&e.revenue!=null){return `<div class="numGrid">
+    <div class="numCell"><div class="lbl">REVENUE EST.</div><div class="val">${fmtCap(e.revenue)}</div></div>
+    <div class="numCell"><div class="lbl">NET INCOME EST.</div><div class="val ${e.netIncome<0?'neg':'pos'}">${e.netIncome!=null?fmtCap(e.netIncome):'N/A'}</div></div>
+    <div class="numCell"><div class="lbl">NET MARGIN</div><div class="val">${e.netMargin!=null?e.netMargin.toFixed(1)+'%':'N/A'}</div></div></div>
+    <div style="margin-top:14px">${outbound}</div>`}
+  return `<div>${outbound}</div>`}
+function companyOverviewHtml(x){let info=COMPANY_INFO[x.s];if(info)return `<p style="font-size:10.5px;color:var(--ink3);letter-spacing:.05em;text-transform:uppercase;margin:0 0 8px">${esc(info.sector)} / ${esc(info.industry)}</p><p style="font-size:11px;color:var(--ink2);line-height:1.6;margin:0">${esc(info.desc)}</p>`;
+  return `<p style="font-size:11px;color:var(--ink2)">Not yet catalogued. <a href="https://finance.yahoo.com/quote/${encodeURIComponent(x.s)}/profile/" target="_blank" rel="noopener noreferrer">View on Yahoo Finance ↗</a></p>`}
+function newsLinksHtml(x){let tv=encodeURIComponent(x.s);return `<div class="newsLine"><a href="https://finance.yahoo.com/quote/${tv}/news" target="_blank" rel="noopener noreferrer">Latest coverage — Yahoo Finance →</a></div><div class="newsLine"><a href="https://news.google.com/search?q=${tv}%20stock" target="_blank" rel="noopener noreferrer">Google News search →</a></div>`}
 
 function renderOverviewTab(x){
-  return `<div class="layout2">
-    <div class="col2">
-      <div class="card"><div class="cardHead"><div><h3>Live Chart</h3><p>Interactive TradingView chart.</p></div><span class="badge mint">LIVE</span></div>
-        <div class="pad"><div class="chartWrap2">${chartHtml(x.s)}</div></div></div>
-      <div class="card"><div class="cardHead"><div><h3>Key Stats</h3><p>Live valuation and trading snapshot.</p></div><span class="badge violet" id="statsTag">LOADING</span></div>
-        <div class="pad" id="statsBody"><div class="emptyState2">Loading live data…</div></div></div>
-      <div class="card"><div class="cardHead"><div><h3>Company Overview</h3><p>Business summary and classification.</p></div></div>
-        <div class="pad">${companyOverviewHtml(x)}</div></div>
-    </div>
-    <div class="col2">
-      <div class="card"><div class="cardHead"><div><h3>News</h3><p>External coverage, opens in a new tab.</p></div></div>
-        <div class="pad">${newsLinksHtml(x)}</div></div>
-      <div class="card"><div class="cardHead"><div><h3>Financials</h3><p>Live-estimated figures plus links for the rest.</p></div></div>
-        <div class="pad" id="finBody">${financialsHtml(x)}</div></div>
-      <div class="card"><div class="cardHead"><div><h3>My Plan Builder</h3><p>Set your own levels against the real price.</p></div></div>
-        <div class="pad" id="planBuilderBody"></div></div>
-    </div>
+  return `<div class="layout"><div class="colL"><div class="stack">
+      <div class="panel"><div class="panelHead"><div><h3>Live Chart</h3></div><span class="stat live">LIVE</span></div>
+        <div class="chartFrame">${chartHtml(x.s)}</div></div>
+      <div class="panel"><div class="panelHead"><div><h3>Key Stats</h3></div><span class="stat" id="statsTag">LOADING</span></div>
+        <div id="statsBody"><div class="empty">Loading live data…</div></div></div>
+      <div class="panel"><div class="panelHead"><div><h3>Company Overview</h3></div></div>${companyOverviewHtml(x)}</div>
+    </div></div>
+    <div class="divider"></div>
+    <div class="colR"><div class="stack">
+      <div class="panel"><div class="panelHead"><div><h3>News</h3></div></div>${newsLinksHtml(x)}</div>
+      <div class="panel"><div class="panelHead"><div><h3>Financials</h3></div></div><div id="finBody">${financialsHtml(x)}</div></div>
+      <div class="panel"><div class="panelHead"><div><h3>Plan Builder</h3></div></div><div id="planBuilderBody"></div></div>
+    </div></div>
   </div>`;
 }
 
 function renderPlanBuilder(x){
   let side=x.bias==='DOWN'?'SHORT':'LONG';
-  $('planBuilderBody').innerHTML=`<div class="inputGrid2">
-    <div><label>DIRECTION</label><select id="side"><option value="LONG" ${side==='LONG'?'selected':''}>Long</option><option value="SHORT" ${side==='SHORT'?'selected':''}>Short</option></select></div>
-    <div><label>ACCOUNT SIZE</label><input id="pAccount" value="10000" type="number" step="100"></div>
-    <div><label>MAX PLANNED LOSS</label><input id="prisk" value="15" type="number"></div>
-    <div><label>ENTRY</label><input id="pe" value="${x.entry}" type="number" step=".01"></div>
-    <div><label>STOP</label><input id="ps" value="${x.stop}" type="number" step=".01"></div>
-    <div><label>TARGET 1</label><input id="pt1" value="${x.t1}" type="number" step=".01"></div>
-    <div><label>TARGET 2</label><input id="pt2" value="${x.t2}" type="number" step=".01"></div>
+  $('planBuilderBody').innerHTML=`<div class="inputRow">
+    <div class="inputCell"><label>DIRECTION</label><select id="side"><option value="LONG" ${side==='LONG'?'selected':''}>LONG</option><option value="SHORT" ${side==='SHORT'?'selected':''}>SHORT</option></select></div>
+    <div class="inputCell"><label>ACCOUNT SIZE</label><input id="pAccount" value="10000" type="number" step="100"></div>
+    <div class="inputCell"><label>MAX LOSS</label><input id="prisk" value="15" type="number"></div>
+    <div class="inputCell"><label>ENTRY</label><input id="pe" value="${x.entry}" type="number" step=".01"></div>
+    <div class="inputCell"><label>STOP</label><input id="ps" value="${x.stop}" type="number" step=".01"></div>
+    <div class="inputCell"><label>TARGET 1</label><input id="pt1" value="${x.t1}" type="number" step=".01"></div>
+    <div class="inputCell"><label>TARGET 2</label><input id="pt2" value="${x.t2}" type="number" step=".01"></div>
   </div>
-  <div id="ladderWrap"></div>
-  <div id="planSummary" style="margin-top:12px"></div>
-  <textarea class="j" id="notes" placeholder="Why am I watching this? What must happen before I act?" style="margin-top:12px;min-height:80px"></textarea>
-  <div class="actionRow"><button class="btn coral" id="savePlanBtn">Save My Plan</button><button class="btn ghost" id="copyBtn">Copy Levels</button></div>
-  <p class="small" style="margin-top:10px">Planning tool only. Not a recommendation or promise of profit.</p>`;
+  <div id="ladderWrap" style="margin-top:14px"></div>
+  <div id="planSummary" style="margin-top:14px"></div>
+  <textarea class="j" id="notes" placeholder="// why am I watching this?" style="margin-top:14px;min-height:70px"></textarea>
+  <div class="btnRow"><button class="btn signal" id="savePlanBtn">SAVE PLAN</button><button class="btn" id="copyBtn">COPY LEVELS</button></div>`;
   function current(){let p={side:$('side').value,entry:Number($('pe').value)||0,stop:Number($('ps').value)||0,t1:Number($('pt1').value)||0,t2:Number($('pt2').value)||0,risk:Number($('prisk').value)||0,accountSize:Number($('pAccount').value)||0};p.m=math(p.entry,p.stop,p.t1,p.t2,p.risk,p.side);return p}
-  function update(){let p=current();$('ladderWrap').innerHTML=ladder(p);
+  function update(){let p=current();$('ladderWrap').innerHTML=ladderHtml(p);
     let winRate=p.m.rr>0?(100/(1+p.m.rr)):0,riskPct=p.accountSize>0?(p.risk/p.accountSize*100):0,riskFlag=riskPct>2;
-    $('planSummary').innerHTML=`<div class="metricline2"><span>Position size</span><b>${p.m.shares} shares</b></div>
-    <div class="metricline2"><span>Max planned loss</span><b style="color:#c23a4d">-${usd(p.m.u*p.m.shares)}</b></div>
-    <div class="metricline2"><span>Risk / reward to T1</span><b>${p.m.rr.toFixed(2)} : 1</b></div>
-    <div class="metricline2"><span>Breakeven win rate needed</span><b>${winRate.toFixed(1)}%</b></div>
-    <div class="metricline2"><span>Risk as % of account</span><b style="color:${riskFlag?'#c23a4d':'#1fa885'}">${riskPct.toFixed(2)}%${riskFlag?' ⚠ above 2%':''}</b></div>`;
+    $('planSummary').innerHTML=`<div class="numGrid">
+    <div class="numCell"><div class="lbl">POSITION</div><div class="val">${p.m.shares} SH</div></div>
+    <div class="numCell"><div class="lbl">MAX LOSS</div><div class="val neg">-${usd(p.m.u*p.m.shares)}</div></div>
+    <div class="numCell"><div class="lbl">R:R TO T1</div><div class="val">${p.m.rr.toFixed(2)}:1</div></div>
+    <div class="numCell"><div class="lbl">BREAKEVEN WIN%</div><div class="val">${winRate.toFixed(1)}%</div></div>
+    <div class="numCell"><div class="lbl">RISK % ACCT</div><div class="val ${riskFlag?'neg':'pos'}">${riskPct.toFixed(2)}%</div></div>
+    <div class="numCell"><div class="lbl">FLAG</div><div class="val">${riskFlag?'⚠ OVER 2%':'OK'}</div></div></div>`;
     return p}
   ['side','pAccount','prisk','pe','ps','pt1','pt2'].forEach(id=>$(id).addEventListener('input',update));
-  $('savePlanBtn').addEventListener('click',()=>{let p=current();if(plans.length>=3){alert('Free plan limit reached (3 saved plans). Delete one to add another.');return}
+  $('savePlanBtn').addEventListener('click',()=>{let p=current();if(plans.length>=3){alert('Plan limit reached (3). Delete one to add another.');return}
     let winRate=p.m.rr>0?(100/(1+p.m.rr)):0,riskPct=p.accountSize>0?(p.risk/p.accountSize*100):0;
     plans.push({id:Date.now(),ticker:x.s,company:x.company,side:p.side,entry:p.entry,stop:p.stop,t1:p.t1,t2:p.t2,risk:p.risk,accountSize:p.accountSize,shares:p.m.shares,rr:p.m.rr,winRate,riskPct,notes:$('notes').value,status:'Watching',created:new Date().toLocaleString()});
     savePlans();appendJournal(`[${new Date().toLocaleString()}] Saved ${p.side} plan for ${x.s} — Entry ${usd(p.entry)}, Stop ${usd(p.stop)}. R:R ${p.m.rr.toFixed(2)}:1.`);
-    $('savePlanBtn').textContent='Saved!';setTimeout(()=>$('savePlanBtn').textContent='Save My Plan',900)});
-  $('copyBtn').addEventListener('click',()=>copyText(`${x.s} — MY ${current().side} PLAN\nEntry: ${usd(current().entry)}\nStop: ${usd(current().stop)}\nTarget 1: ${usd(current().t1)}\nTarget 2: ${usd(current().t2)}`,$('copyBtn')));
+    $('savePlanBtn').textContent='SAVED';setTimeout(()=>$('savePlanBtn').textContent='SAVE PLAN',900)});
+  $('copyBtn').addEventListener('click',()=>copyText(`${x.s} — ${current().side} PLAN\nEntry: ${usd(current().entry)}\nStop: ${usd(current().stop)}\nTarget 1: ${usd(current().t1)}\nTarget 2: ${usd(current().t2)}`,$('copyBtn')));
   update();
 }
 
 function fetchLiveStats(x){
   fetch(`/api/quote?symbols=${encodeURIComponent(x.s)}`).then(r=>r.json()).then(data=>{
     let q=data&&data.quotes&&data.quotes[x.s];if(!q)return;
-    $('statsTag').className='badge mint';$('statsTag').textContent='LIVE';
-    $('statsBody').innerHTML=`<div class="numbers2">
-      <div class="numCard"><span>MARKET CAP</span><b>${q.marketCap!=null?fmtCap(q.marketCap):'N/A'}</b></div>
-      <div class="numCard"><span>P/E RATIO</span><b>${q.pe!=null?Number(q.pe).toFixed(1):'N/A'}</b></div>
-      <div class="numCard"><span>EPS (TTM)</span><b>${q.eps!=null?usd(q.eps):'N/A'}</b></div>
-      <div class="numCard"><span>VOLUME</span><b>${q.volume!=null?fmtVol(q.volume):'N/A'}</b></div>
-      <div class="numCard"><span>AVG VOLUME</span><b>${q.avgVolume!=null?fmtVol(q.avgVolume):'N/A'}</b></div>
-      <div class="numCard"><span>DIV YIELD</span><b>${q.divYield?(q.divYield*100).toFixed(2)+'%':'None'}</b></div>
-      <div class="numCard"><span>DAY RANGE</span><b>${q.dayLow!=null?usd(q.dayLow)+' – '+usd(q.dayHigh):'N/A'}</b></div>
-      <div class="numCard"><span>52-WK RANGE</span><b>${q.yearLow!=null?usd(q.yearLow)+' – '+usd(q.yearHigh):'N/A'}</b></div>
-      <div class="numCard"><span>PREV CLOSE</span><b>${usd(q.previousClose)}</b></div></div>`;
+    $('statsTag').className='stat live';$('statsTag').textContent='LIVE';
+    $('statsBody').innerHTML=`<div class="numGrid">
+      <div class="numCell"><div class="lbl">MARKET CAP</div><div class="val">${q.marketCap!=null?fmtCap(q.marketCap):'N/A'}</div></div>
+      <div class="numCell"><div class="lbl">P/E</div><div class="val">${q.pe!=null?Number(q.pe).toFixed(1):'N/A'}</div></div>
+      <div class="numCell"><div class="lbl">EPS TTM</div><div class="val">${q.eps!=null?usd(q.eps):'N/A'}</div></div>
+      <div class="numCell"><div class="lbl">VOLUME</div><div class="val">${q.volume!=null?fmtVol(q.volume):'N/A'}</div></div>
+      <div class="numCell"><div class="lbl">AVG VOL</div><div class="val">${q.avgVolume!=null?fmtVol(q.avgVolume):'N/A'}</div></div>
+      <div class="numCell"><div class="lbl">DIV YIELD</div><div class="val">${q.divYield?(q.divYield*100).toFixed(2)+'%':'NONE'}</div></div>
+      <div class="numCell"><div class="lbl">DAY RANGE</div><div class="val" style="font-size:12px">${q.dayLow!=null?usd(q.dayLow)+'–'+usd(q.dayHigh):'N/A'}</div></div>
+      <div class="numCell"><div class="lbl">52W RANGE</div><div class="val" style="font-size:12px">${q.yearLow!=null?usd(q.yearLow)+'–'+usd(q.yearHigh):'N/A'}</div></div>
+      <div class="numCell"><div class="lbl">PREV CLOSE</div><div class="val">${usd(q.previousClose)}</div></div></div>`;
     if(q.revenuePerShareTTM!=null&&q.marketCap!=null&&q.price>0){
       let shares=q.marketCap/q.price,revenue=q.revenuePerShareTTM*shares,netMargin=q.netMarginTTM!=null?q.netMarginTTM:null,netIncome=netMargin!=null?revenue*netMargin/100:null;
       ESTIMATED_FIN[x.s]={revenue,netIncome,netMargin};
@@ -493,95 +525,85 @@ function fetchLiveStats(x){
   }).catch(()=>{$('statsTag').textContent='UNAVAILABLE'});
 }
 
-// ---------- MORE DATA (SparkNotes deep dive, gated to 5 fixed symbols) ----------
-function sizeLabel(cap){if(cap==null)return'Unknown';if(cap>=200e9)return'Very large company';if(cap>=10e9)return'Large company';if(cap>=2e9)return'Mid-sized company';return'Small company — expect bigger swings'}
-function marginLabel(m){if(m==null)return'Unknown';if(m>=15)return'Healthy profits';if(m>=0)return'Profitable, thin cushion';return'Losing money right now'}
-function rangeLabel(pos){if(pos==null)return'Unknown';if(pos>=80)return'Near its 52-week high';if(pos<=20)return'Near its 52-week low';return'Mid-range for the year'}
-function volLabel(r){if(r==null)return'Unknown';if(r>=1.5)return'Much heavier than usual';if(r<=0.5)return'Quieter than usual';return'About normal'}
-function tip3(t){return t?` <i class="tip3" data-tip="${esc(t)}">?</i>`:''}
-function numCard(label,val,cls,tip){return `<div class="numCard"><span>${label}${tip3(tip)}</span><b class="${cls||''}">${val}</b></div>`}
+// ---------- MORE DATA ----------
+function sizeLabel(cap){if(cap==null)return'UNKNOWN';if(cap>=200e9)return'VERY LARGE';if(cap>=10e9)return'LARGE';if(cap>=2e9)return'MID-SIZED';return'SMALL — EXPECT SWINGS'}
+function marginLabel(m){if(m==null)return'unknown';if(m>=15)return'healthy profits';if(m>=0)return'profitable, thin cushion';return'losing money right now'}
+function rangeLabel(pos){if(pos==null)return'unknown';if(pos>=80)return'near its 52-week high';if(pos<=20)return'near its 52-week low';return'mid-range for the year'}
+function volLabel(r){if(r==null)return'UNKNOWN';if(r>=1.5)return'HEAVIER THAN USUAL';if(r<=0.5)return'QUIETER THAN USUAL';return'NORMAL'}
+function tip(t){return t?` <i class="tip" data-tip="${esc(t)}">i</i>`:''}
+function numCell(label,val,cls,t){return `<div class="numCell"><div class="lbl">${label}${tip(t)}</div><div class="val ${cls||''}">${val}</div></div>`}
 
 function bgBuildFlags(q,news){
   const flags=[];
-  if(q.price!=null&&q.price<5)flags.push({t:'PENNY-STOCK TERRITORY',d:'Shares under $5 often have wide spreads and are easier to manipulate.'});
-  if(q.marketCap!=null&&q.marketCap<3e8)flags.push({t:'MICRO-CAP COMPANY',d:'Under $300M market cap — can swing 20% on a single headline.'});
-  if(q.netMarginTTM!=null&&q.netMarginTTM<0)flags.push({t:'LOSING MONEY',d:'This company is not profitable right now.'});
-  if(q.changePercent!=null&&Math.abs(q.changePercent)>=15&&(!news||!news.length))flags.push({t:'HUGE MOVE, NO CLEAR NEWS',d:'A 15%+ move with no fresh headlines can mean speculation.'});
-  if(q.volume!=null&&q.avgVolume!=null&&q.avgVolume>0&&q.volume/q.avgVolume<0.5)flags.push({t:'THIN TRADING TODAY',d:'Volume is well below average — harder to sell at the price you see.'});
-  if(q.pe!=null&&q.pe>60)flags.push({t:'EXPENSIVE EXPECTATIONS',d:'A P/E above 60 means investors pay a lot per dollar of profit.'});
+  if(q.price!=null&&q.price<5)flags.push({t:'PENNY-STOCK RANGE',d:'Shares under $5 often carry wide spreads and are easier to manipulate.'});
+  if(q.marketCap!=null&&q.marketCap<3e8)flags.push({t:'MICRO-CAP',d:'Under $300M market cap — can move 20% on a single headline.'});
+  if(q.netMarginTTM!=null&&q.netMarginTTM<0)flags.push({t:'UNPROFITABLE',d:'This company is not profitable right now.'});
+  if(q.changePercent!=null&&Math.abs(q.changePercent)>=15&&(!news||!news.length))flags.push({t:'UNEXPLAINED MOVE',d:'A 15%+ move with no fresh headlines can signal speculation.'});
+  if(q.volume!=null&&q.avgVolume!=null&&q.avgVolume>0&&q.volume/q.avgVolume<0.5)flags.push({t:'THIN VOLUME',d:'Well below average volume — harder to exit at the price shown.'});
+  if(q.pe!=null&&q.pe>60)flags.push({t:'HIGH VALUATION',d:'A P/E above 60 means a high price paid per dollar of profit.'});
   return flags;
 }
 function bgFlagsHtml(q,news){
   const flags=bgBuildFlags(q,news);
-  if(!flags.length)return `<div class="flagBox good"><b>✓ No major red flags</b>Nothing in the live data trips the beginner risk rules. That's not the same as safe — keep researching.</div>`;
-  return flags.map(f=>`<div class="flagBox warn"><b>⚠ ${esc(f.t)}</b>${esc(f.d)}</div>`).join('');
+  if(!flags.length)return `<div class="flagLine"><span class="flagMark ok">OK</span><div><b>No flags triggered</b><p>Nothing in live data trips the beginner risk rules. Not the same as safe.</p></div></div>`;
+  return flags.map(f=>`<div class="flagLine"><span class="flagMark warn">⚠</span><div><b>${esc(f.t)}</b><p>${esc(f.d)}</p></div></div>`).join('');
 }
 function bgChecklistHtml(sym,q,p,news){
-  const gapNote=(q.open!=null&&q.previousClose!=null&&Math.abs((q.open-q.previousClose)/q.previousClose*100)>=1)?' It gapped at the open — news likely arrived before the bell.':'';
+  const gapNote=(q.open!=null&&q.previousClose!=null&&Math.abs((q.open-q.previousClose)/q.previousClose*100)>=1)?' Gapped at the open — news likely landed pre-bell.':'';
   const items=[
-    {q:'What does the company do?',a:p&&p.industry?((p.name||sym)+' — '+p.industry+'.'):'Not in the free data — check Yahoo Finance.',ok:p&&p.industry?true:null},
-    {q:'Is it making money?',a:q.netMarginTTM==null?'Unknown.':(q.netMarginTTM>=0?'Yes — net margin of '+q.netMarginTTM.toFixed(1)+'%.':'No — losing money (net margin '+q.netMarginTTM.toFixed(1)+'%).'),ok:q.netMarginTTM==null?null:q.netMarginTTM>=0},
-    {q:'Is it big enough to be stable?',a:q.marketCap==null?'Unknown.':(q.marketCap>=2e9?fmtCap(q.marketCap)+' — reasonably established.':fmtCap(q.marketCap)+' — small, expect swings.'),ok:q.marketCap==null?null:q.marketCap>=2e9},
-    {q:'Why is it moving today?',a:'It is '+fmtPct(q.changePercent)+' today.'+gapNote,ok:null},
-    {q:'Is real news driving it?',a:news&&news.length?'Yes — see headlines below.':'No fresh headlines — may be general market noise.',ok:news&&news.length?true:null},
-    {q:'Do you have an exit plan?',a:'Set a target and a stop before buying. Use the Plan Builder in the Overview tab.',ok:null}
+    {q:'What does it do?',a:p&&p.industry?((p.name||sym)+' — '+p.industry+'.'):'Not in free data — check Yahoo.',ok:p&&p.industry?true:null},
+    {q:'Is it profitable?',a:q.netMarginTTM==null?'Unknown.':(q.netMarginTTM>=0?'Yes — net margin '+q.netMarginTTM.toFixed(1)+'%.':'No — net margin '+q.netMarginTTM.toFixed(1)+'%.'),ok:q.netMarginTTM==null?null:q.netMarginTTM>=0},
+    {q:'Is it stable in size?',a:q.marketCap==null?'Unknown.':(q.marketCap>=2e9?fmtCap(q.marketCap)+' — established.':fmtCap(q.marketCap)+' — small, expect swings.'),ok:q.marketCap==null?null:q.marketCap>=2e9},
+    {q:'Why is it moving?',a:fmtPct(q.changePercent)+' today.'+gapNote,ok:null},
+    {q:'Is news driving it?',a:news&&news.length?'Yes — see headlines below.':'No fresh headlines — likely market noise.',ok:news&&news.length?true:null},
+    {q:'Do you have an exit plan?',a:'Set target + stop before buying. Use Plan Builder in Overview.',ok:null}
   ];
-  return items.map(it=>{const cls=it.ok===true?'ok':it.ok===false?'bad':'mid';const icon=it.ok===true?'✓':it.ok===false?'✗':'→';
-    return `<div class="checkItem2"><div class="checkIcon2 ${cls}">${icon}</div><div><b>${esc(it.q)}</b><p>${esc(it.a)}</p></div></div>`}).join('');
+  return items.map(it=>{const cls=it.ok===true?'ok':it.ok===false?'bad':'';const mk=it.ok===true?'YES':it.ok===false?'NO':'→';
+    return `<div class="chkLine"><span class="chkMark ${cls}">${mk}</span><div><b>${esc(it.q)}</b><p>${esc(it.a)}</p></div></div>`}).join('');
 }
 function bgPlainEnglishHtml(sym,q,p,rev,ni,rangePos){
   const name=p&&p.name?p.name:sym,industry=p&&p.industry?p.industry:'its main business',exchange=p&&p.exchange?p.exchange:'a US exchange';
   const cap=q.marketCap!=null?q.marketCap:null,nm=q.netMarginTTM!=null?q.netMarginTTM:null,gm=q.grossMarginTTM!=null?q.grossMarginTTM:null,pe=q.pe!=null?q.pe:null;
-  let out=`<p><b>${esc(name)}</b> is a ${esc(sizeLabel(cap)).toLowerCase()} in <b>${esc(industry)}</b>, trading on ${esc(exchange)} under <b>${esc(sym)}</b>.</p>`;
-  let p2=`<p>On profitability: ${esc(marginLabel(nm)).toLowerCase()}.`;
-  if(rev!=null)p2+=` Estimated trailing revenue is about <b>${esc(fmtCap(rev))}</b>`;
-  if(ni!=null)p2+=` with estimated net income of <b>${esc(fmtCap(ni))}</b>`;
-  if(nm!=null)p2+=` — a net margin of <b>${esc(nm.toFixed(1))}%</b>`;
-  if(gm!=null)p2+=`. Gross margin is <b>${esc(gm.toFixed(1))}%</b>`;
+  let out=`<p style="margin:0 0 10px;font-size:11px;line-height:1.7"><b>${esc(name)}</b> is a ${esc(sizeLabel(cap)).toLowerCase()} company in <b>${esc(industry)}</b>, on ${esc(exchange)}.</p>`;
+  let p2=`<p style="margin:0 0 10px;font-size:11px;line-height:1.7">Profitability: ${esc(marginLabel(nm))}.`;
+  if(rev!=null)p2+=` Est. revenue <b>${esc(fmtCap(rev))}</b>`;
+  if(ni!=null)p2+=`, est. net income <b>${esc(fmtCap(ni))}</b>`;
+  if(nm!=null)p2+=` — net margin <b>${esc(nm.toFixed(1))}%</b>`;
   p2+='.</p>';
-  let p3='<p>On the stock itself: ';
-  if(pe!=null)p3+=`the P/E of <b>${esc(Number(pe).toFixed(1))}</b> shows how many dollars investors pay per dollar of yearly earnings. `;
-  if(rangePos!=null)p3+=`The price sits at about <b>${esc(rangePos.toFixed(0))}%</b> of its 52-week range — ${esc(rangeLabel(rangePos)).toLowerCase()}. `;
-  p3+='Check the balance sheet and latest earnings call for the full picture.</p>';
+  let p3='<p style="margin:0;font-size:11px;line-height:1.7">';
+  if(pe!=null)p3+=`P/E of <b>${esc(Number(pe).toFixed(1))}</b> — dollars paid per dollar of yearly earnings. `;
+  if(rangePos!=null)p3+=`Price sits at <b>${esc(rangePos.toFixed(0))}%</b> of its 52-week range — ${esc(rangeLabel(rangePos))}.`;
+  p3+='</p>';
   return out+p2+p3;
 }
 function bgWhyMovedHtml(sym,q,news){
   const pct=q.changePercent;
-  let t=`<p>As of the latest quote, <b>${esc(sym)}</b> trades at <b>${esc(usd(q.price))}</b> — <b style="color:${(pct||0)>=0?'#1fa885':'#c23a4d'}">${esc(fmtPct(pct))}</b> on the day.</p><p>`;
+  let t=`<p style="margin:0 0 10px;font-size:11px;line-height:1.7"><b>${esc(sym)}</b> trades at <b>${esc(usd(q.price))}</b>, <b class="${(pct||0)>=0?'pos':'neg'}" style="color:${(pct||0)>=0?'var(--pos)':'var(--neg)'}">${esc(fmtPct(pct))}</b> today.</p>`;
   if(q.open!=null&&q.previousClose!=null){
     const gap=(q.open-q.previousClose)/q.previousClose*100;
-    t+=`It opened at ${esc(usd(q.open))} versus a previous close of ${esc(usd(q.previousClose))}`;
-    t+=Math.abs(gap)>=1?` — a ${gap>=0?'gap up':'gap down'} of about ${Math.abs(gap).toFixed(1)}% at the open.`:', so the move built gradually rather than gapping at the open.';
+    t+=`<p style="margin:0 0 10px;font-size:11px;line-height:1.7">Opened at ${esc(usd(q.open))} vs previous close ${esc(usd(q.previousClose))}`;
+    t+=Math.abs(gap)>=1?` — a ${gap>=0?'gap up':'gap down'} of ${Math.abs(gap).toFixed(1)}%.</p>`:'.</p>';
   }
-  t+='</p>';
-  if(news&&news.length&&news[0])t+=`<p>The freshest headline: <b>${esc(news[0].headline)}</b>${news[0].source?' ('+esc(news[0].source)+')':''}.</p>`;
-  else t+='<p>No fresh company headlines came back from the free news feed.</p>';
+  if(news&&news.length&&news[0])t+=`<p style="margin:0;font-size:11px;line-height:1.7">Freshest headline: <b>${esc(news[0].headline)}</b>${news[0].source?' ('+esc(news[0].source)+')':''}.</p>`;
+  else t+='<p style="margin:0;font-size:11px;line-height:1.7">No fresh headlines — likely broad market movement.</p>';
   return t;
 }
 function renderMoreDataTab(x){
   if(FIXED_SYMBOLS.indexOf(x.s)===-1){
-    return `<div class="card"><div class="moreDataLock">
-      <b style="display:block;font-size:14px;color:#241f2b;margin-bottom:6px">More Data is available for our 5 starter stocks right now</b>
-      AAPL, MSFT, NVDA, AMZN, and GOOGL — more tickers are coming soon.
-    </div></div>`;
+    return `<div class="panel"><div class="lock"><b>More Data available for 5 starter instruments</b>AAPL · MSFT · NVDA · AMZN · GOOGL — more coming online soon.</div></div>`;
   }
-  return `<div class="layout2">
-    <div class="col2">
-      <div class="card"><div class="cardHead"><div><h3>Beginner Checklist</h3><p>Six questions, auto-answered from live data.</p></div><span class="badge mint">START HERE</span></div>
-        <div class="pad" id="bgChecklist"><div class="emptyState2">Loading…</div></div></div>
-      <div class="card"><div class="cardHead"><div><h3>Plain-English Breakdown</h3><p>What the numbers actually mean.</p></div></div>
-        <div class="pad" id="bgPlain"></div></div>
-      <div class="card"><div class="cardHead"><div><h3>Financial Health</h3><p>Tap any ? for an explanation.</p></div></div>
-        <div class="pad"><div class="numbers2" id="bgNums"></div></div></div>
-    </div>
-    <div class="col2">
-      <div class="card"><div class="cardHead"><div><h3>Beginner Watch-Outs</h3><p>Automatic risk flags.</p></div></div>
-        <div class="pad" id="bgFlags"></div></div>
-      <div class="card"><div class="cardHead"><div><h3>Why It Moved Today</h3><p>Price action plus the latest headline.</p></div></div>
-        <div class="pad" id="bgWhy"></div></div>
-      <div class="card"><div class="cardHead"><div><h3>Latest News</h3><p>Recent company headlines.</p></div></div>
-        <div class="pad" id="bgNews"></div></div>
-    </div>
+  return `<div class="layout"><div class="colL"><div class="stack">
+      <div class="panel"><div class="panelHead"><div><h3>Beginner Checklist</h3></div><span class="stat live">START HERE</span></div>
+        <div id="bgChecklist"><div class="empty">Loading…</div></div></div>
+      <div class="panel"><div class="panelHead"><div><h3>Plain-English Breakdown</h3></div></div><div id="bgPlain"></div></div>
+      <div class="panel"><div class="panelHead"><div><h3>Financial Health</h3></div></div><div class="numGrid" id="bgNums"></div></div>
+    </div></div>
+    <div class="divider"></div>
+    <div class="colR"><div class="stack">
+      <div class="panel"><div class="panelHead"><div><h3>Watch-Outs</h3></div></div><div id="bgFlags"></div></div>
+      <div class="panel"><div class="panelHead"><div><h3>Why It Moved</h3></div></div><div id="bgWhy"></div></div>
+      <div class="panel"><div class="panelHead"><div><h3>Latest News</h3></div></div><div id="bgNews"></div></div>
+    </div></div>
   </div>`;
 }
 function loadBeginnerPanel(x){
@@ -602,35 +624,36 @@ function loadBeginnerPanel(x){
     if($('bgChecklist'))$('bgChecklist').innerHTML=bgChecklistHtml(x.s,q,p,news);
     if($('bgPlain'))$('bgPlain').innerHTML=bgPlainEnglishHtml(x.s,q,p,rev,ni,rangePos);
     if($('bgNums'))$('bgNums').innerHTML=[
-      numCard('REVENUE (EST.)',rev!=null?fmtCap(rev):'N/A',null,'Total sales over the last 12 months, estimated live.'),
-      numCard('NET INCOME (EST.)',ni!=null?fmtCap(ni):'N/A',ni!=null?(ni<0?'down':'up'):null,'Profit after costs. Negative means spending more than earning.'),
-      numCard('EPS (TTM)',q.eps!=null?usd(q.eps):'N/A',null,'Profit per share over the last 12 months.'),
-      numCard('NET MARGIN',q.netMarginTTM!=null?q.netMarginTTM.toFixed(1)+'%':'N/A',null,'Share of sales kept as profit. Above 15% is strong.'),
-      numCard('52-WK POSITION',rangePos!=null?rangePos.toFixed(0)+'%':'N/A',null,'Where price sits in its 52-week range. Near 100% = near the high.'),
-      numCard('VOLUME VS AVG',volLabel(volRatio),null,'Today\'s trading activity versus a normal day.')
+      numCell('REVENUE EST.',rev!=null?fmtCap(rev):'N/A',null,'Total sales over 12mo, estimated live.'),
+      numCell('NET INCOME EST.',ni!=null?fmtCap(ni):'N/A',ni!=null?(ni<0?'neg':'pos'):null,'Profit after costs. Negative = spending more than earning.'),
+      numCell('EPS TTM',q.eps!=null?usd(q.eps):'N/A',null,'Profit per share, trailing 12 months.'),
+      numCell('NET MARGIN',q.netMarginTTM!=null?q.netMarginTTM.toFixed(1)+'%':'N/A',null,'Share of sales kept as profit. 15%+ is strong.'),
+      numCell('52W POSITION',rangePos!=null?rangePos.toFixed(0)+'%':'N/A',null,'Position in 52-week range. Near 100% = near the high.'),
+      numCell('VOLUME',volLabel(volRatio),null,'Today\'s activity vs a normal day.')
     ].join('');
     if($('bgWhy'))$('bgWhy').innerHTML=bgWhyMovedHtml(x.s,q,news);
-    if($('bgNews'))$('bgNews').innerHTML=news&&news.length?news.slice(0,6).map(n=>`<div class="newsItem2"><a href="${esc(n.url)}" target="_blank" rel="noopener noreferrer">${esc(n.headline)}</a><div class="newsMeta2"><span>${esc(n.source||'')}</span><span>${ago(n.datetime)}</span></div></div>`).join(''):'<div class="emptyState2">No recent headlines returned.</div>';
-  }).catch(()=>{if($('bgChecklist'))$('bgChecklist').innerHTML='<div class="emptyState2">Could not load beginner data right now.</div>'});
+    if($('bgNews'))$('bgNews').innerHTML=news&&news.length?news.slice(0,6).map(n=>`<div class="newsLine"><a href="${esc(n.url)}" target="_blank" rel="noopener noreferrer">${esc(n.headline)}</a><div class="newsMeta">${esc(n.source||'')} · ${ago(n.datetime)}</div></div>`).join(''):'<div class="empty">No recent headlines.</div>';
+  }).catch(()=>{if($('bgChecklist'))$('bgChecklist').innerHTML='<div class="empty">Could not load beginner data.</div>'});
 }
 
 function openStock(x,sourceLabel){
   show('stockPage');
-  let up=(x.pct||0)>=0;
   $('stockPage').innerHTML=`
-    <button class="back2" id="back">← Back</button>
-    <div class="stockHead">
-      <div class="stockTitle"><h1><span class="sym">${x.s}</span> · ${esc(x.company)}</h1><span class="stockPrice">${usd(x.price)}</span>${chgPillHtml(x.pct,x.chg)}</div>
-      <span class="pillTag">${SNAPSHOT_TIME}${sourceLabel?' · '+esc(sourceLabel):''}</span>
+    <div class="hdr" style="border-bottom:1px solid var(--lineStrong);cursor:pointer" id="back">
+      <div><div class="tag">← RETURN / ${sourceLabel||''}</div>
+        <h1>${x.s} <span style="color:var(--ink3);font-size:20px">${esc(x.company)}</span></h1>
+        <p class="sub">${usd(x.price)} · ${chgTxt(x.pct,x.chg)}</p>
+      </div>
+      <div class="coord">${SNAPSHOT_TIME}<b>${sourceLabel||'DETAIL'}</b></div>
     </div>
-    <div class="tabs2" style="margin-bottom:18px">
-      <button class="tab2 active" id="tabOverview">Overview</button>
-      <button class="tab2" id="tabMoreData">More Data ↓</button>
+    <div class="tabRow" style="margin-top:24px">
+      <button class="tabBtn active" id="tabOverview">OVERVIEW</button>
+      <button class="tabBtn" id="tabMoreData">MORE DATA</button>
     </div>
     <div id="paneOverview">${renderOverviewTab(x)}</div>
     <div id="paneMoreData" style="display:none">${renderMoreDataTab(x)}</div>
   `;
-  $('back').addEventListener('click',()=>show(sourceLabel==='Dashboard'?'dashboard':'screener'));
+  $('back').addEventListener('click',()=>show(sourceLabel==='DASHBOARD'?'dashboard':'screener'));
   fetchLiveStats(x);
   renderPlanBuilder(x);
   let loaded=false;
@@ -640,30 +663,31 @@ function openStock(x,sourceLabel){
 
 // ---------- PLANS / JOURNAL ----------
 function renderPlans(){
-  if(!plans.length){$('plansList').innerHTML='<div class="card"><div class="pad emptyState2">No saved plans yet. Open a stock and use the Plan Builder to add your first plan.</div></div>';return}
-  $('plansList').innerHTML=plans.map(p=>`<article class="planItem2">
-    <div class="planItemHead2"><div><b style="font-family:'Sora',sans-serif">${p.ticker} · ${esc(p.company)}</b><div class="small">${p.side} · ${p.created}</div></div>
-    <select class="status2" data-status="${p.id}"><option ${p.status==='Watching'?'selected':''}>Watching</option><option ${p.status==='Entry Reached'?'selected':''}>Entry Reached</option><option ${p.status==='Target 1'?'selected':''}>Target 1</option><option ${p.status==='Target 2'?'selected':''}>Target 2</option><option ${p.status==='Stop Reached'?'selected':''}>Stop Reached</option><option ${p.status==='Closed'?'selected':''}>Closed</option></select></div>
-    <div class="pad" style="display:grid;gap:14px;grid-template-columns:1fr 1fr">
-      <div>${ladder(p)}</div>
-      <div><div class="metricline2"><span>Max planned loss</span><b style="color:#c23a4d">-${usd(p.risk)}</b></div>
-      <div class="metricline2"><span>Position size</span><b>${p.shares} shares</b></div>
-      <div class="metricline2"><span>Risk / reward</span><b>${(p.rr||0).toFixed(2)} : 1</b></div>
-      <div class="metricline2"><span>Notes</span><b>${p.notes||'—'}</b></div>
-      <div class="actionRow"><button class="btn ghost" data-id="${p.id}">Delete Plan</button></div></div>
+  if(!plans.length){$('plansList').innerHTML='<div class="panel"><div class="empty">No saved plans. Open a stock and use the Plan Builder.</div></div>';return}
+  $('plansList').innerHTML=plans.map(p=>`<article class="planBlock">
+    <div class="planBlockHead"><div><b style="font-family:var(--sans);font-size:13px">${p.ticker} · ${esc(p.company)}</b><div style="font-size:9px;color:var(--ink3);margin-top:3px">${p.side} · ${p.created}</div></div>
+    <select class="selectStatus" data-status="${p.id}"><option ${p.status==='Watching'?'selected':''}>Watching</option><option ${p.status==='Entry Reached'?'selected':''}>Entry Reached</option><option ${p.status==='Target 1'?'selected':''}>Target 1</option><option ${p.status==='Target 2'?'selected':''}>Target 2</option><option ${p.status==='Stop Reached'?'selected':''}>Stop Reached</option><option ${p.status==='Closed'?'selected':''}>Closed</option></select></div>
+    <div style="padding:16px;display:grid;gap:16px;grid-template-columns:1fr 1fr">
+      <div>${ladderHtml(p)}</div>
+      <div><div class="numGrid">
+      <div class="numCell"><div class="lbl">MAX LOSS</div><div class="val neg">-${usd(p.risk)}</div></div>
+      <div class="numCell"><div class="lbl">SIZE</div><div class="val">${p.shares} SH</div></div>
+      <div class="numCell"><div class="lbl">R:R</div><div class="val">${(p.rr||0).toFixed(2)}:1</div></div></div>
+      <p style="font-size:10px;color:var(--ink2);margin:10px 0">${p.notes||'—'}</p>
+      <button class="btn" data-id="${p.id}">DELETE</button></div>
     </div></article>`).join('');
   document.querySelectorAll('[data-status]').forEach(el=>el.addEventListener('change',()=>{let p=plans.find(x=>String(x.id)===String(el.dataset.status));if(p){p.status=el.value;savePlans();appendJournal(`[${new Date().toLocaleString()}] ${p.ticker} plan marked ${el.value}.`)}}));
   document.querySelectorAll('[data-id]').forEach(el=>el.addEventListener('click',()=>{plans=plans.filter(p=>String(p.id)!==String(el.dataset.id));savePlans();renderPlans()}));
 }
 $('journalText').value=localStorage.getItem('orbitJournal')||'';
-$('saveJournal').addEventListener('click',()=>{localStorage.setItem('orbitJournal',$('journalText').value);$('saveStatus').textContent='Saved'});
-$('clearJournal').addEventListener('click',()=>{localStorage.removeItem('orbitJournal');$('journalText').value='';$('saveStatus').textContent='Cleared'});
+$('saveJournal').addEventListener('click',()=>{localStorage.setItem('orbitJournal',$('journalText').value);$('saveStatus').textContent='SAVED'});
+$('clearJournal').addEventListener('click',()=>{localStorage.removeItem('orbitJournal');$('journalText').value='';$('saveStatus').textContent='CLEARED'});
 
-document.querySelectorAll('.tab2[data-list]').forEach(b=>b.addEventListener('click',()=>loadList(b.dataset.list)));
+document.querySelectorAll('.tabBtn[data-list]').forEach(b=>b.addEventListener('click',()=>loadList(b.dataset.list)));
 $('smallCapToggle').addEventListener('click',()=>{smallCapOnly=!smallCapOnly;$('smallCapToggle').classList.toggle('active',smallCapOnly);loadList(currentList)});
-document.addEventListener('click',e=>{const t=e.target.closest('.tip3');document.querySelectorAll('.tip3.on').forEach(x=>{if(x!==t)x.classList.remove('on')});if(t)t.classList.toggle('on')});
+document.addEventListener('click',e=>{const t=e.target.closest('.tip');document.querySelectorAll('.tip.on').forEach(x=>{if(x!==t)x.classList.remove('on')});if(t)t.classList.toggle('on')});
 
-$('snapTime').textContent=SNAPSHOT_TIME;
+$('snapTime').innerHTML='SNAPSHOT<br>'+SNAPSHOT_TIME+'<b>LIVE FEED</b>';
 loadDashboard();
 loadList('gainer');
 renderPlans();
