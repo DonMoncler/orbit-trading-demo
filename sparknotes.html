@@ -44,6 +44,7 @@ main{width:min(1300px,100%);margin:0 auto;padding:34px 26px 70px}
 .phead p{font-size:10px;color:#8b939b;margin:5px 0 0}
 .tag{color:var(--red);font-size:8px;letter-spacing:.1em;border:1px solid var(--red);padding:5px;height:max-content;background:rgba(255,91,82,.08)}
 .tag.live{color:var(--green);border-color:var(--green);background:rgba(57,226,157,.08);text-shadow:0 0 6px rgba(57,226,157,.35)}
+.tag.warn{color:var(--amber);border-color:var(--amber);background:rgba(245,166,35,.08)}
 .pad{padding:16px}
 .pad p{margin:0 0 12px;font-size:11px;color:#c9d1d6}
 .pad p b{color:#eef2f5}
@@ -66,6 +67,23 @@ main{width:min(1300px,100%);margin:0 auto;padding:34px 26px 70px}
 .newsMeta{display:flex;gap:10px;font-size:8px;color:var(--muted);margin-top:5px;letter-spacing:.06em}
 .metricline{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:10px;color:#dfe4e8}
 .emptyState{padding:18px 4px;color:var(--muted);font-size:11px}
+.tip{display:inline-block;width:13px;height:13px;line-height:13px;border-radius:50%;border:1px solid var(--muted);color:var(--muted);font-size:8px;text-align:center;cursor:help;margin-left:5px;position:relative;vertical-align:middle;letter-spacing:0}
+.tip::after{content:attr(data-tip);display:none;position:absolute;left:50%;bottom:135%;transform:translateX(-50%);width:210px;max-width:70vw;background:#23272c;border:1px solid rgba(255,255,255,.25);padding:9px 10px;font-size:9px;line-height:1.45;color:#dfe4e8;z-index:60;box-shadow:0 10px 24px rgba(0,0,0,.5);text-transform:none;letter-spacing:0;text-align:left}
+.tip:hover::after,.tip.on::after{display:block}
+.flags{display:grid;gap:8px;margin-bottom:18px}
+.flagsHead{font-size:9px;letter-spacing:.12em;color:var(--amber)}
+.flag{border:1px solid rgba(245,166,35,.4);border-left:3px solid var(--amber);background:rgba(245,166,35,.06);padding:10px 12px;font-size:10px;color:#e8dcc3}
+.flag b{color:var(--amber);display:block;font-size:9px;letter-spacing:.1em;margin-bottom:4px}
+.flagsGood{border:1px solid rgba(57,226,157,.35);border-left:3px solid var(--green);background:rgba(57,226,157,.06);padding:10px 12px;font-size:10px;color:#c9d1d6;margin-bottom:18px}
+.flagsGood b{color:var(--green);letter-spacing:.08em;font-size:9px}
+.checkItem{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:10px}
+.checkItem:last-child{border-bottom:0}
+.checkIcon{width:16px;height:16px;border-radius:50%;flex:none;text-align:center;line-height:15px;font-size:9px;margin-top:1px}
+.checkIcon.ok{background:rgba(57,226,157,.15);color:var(--green);border:1px solid var(--green)}
+.checkIcon.bad{background:rgba(255,91,82,.12);color:var(--red);border:1px solid var(--red)}
+.checkIcon.mid{background:rgba(90,209,255,.12);color:var(--cyan);border:1px solid var(--cyan)}
+.checkItem b{color:#eef2f5;font-weight:600;display:block}
+.checkItem p{margin:3px 0 0;color:#9aa3ab;font-size:10px}
 @media(max-width:900px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.numbers{grid-template-columns:1fr 1fr}.hero h1{font-size:28px}.topbar{padding:14px 16px}main{padding:22px 14px 50px}}
 </style>
 </head>
@@ -78,7 +96,7 @@ main{width:min(1300px,100%);margin:0 auto;padding:34px 26px 70px}
   <section class="hero">
     <div class="kicker">ORBIT SYSTEM / STOCK SPARKNOTES</div>
     <h1>Understand a stock in minutes.</h1>
-    <p class="sub">Plain-English breakdown of any ticker: what the company does, whether it's making money, how big it is, and what's moving the stock today — built for beginners.</p>
+    <p class="sub">Plain-English breakdown of any ticker: what the company does, whether it's making money, what the risks are, and what's moving the stock today — built for beginners. Tap any <b>?</b> icon for an explanation.</p>
     <div class="searchRow">
       <input id="snInput" placeholder="Enter a ticker — AAPL, PLTR, MRNA, RZLV…" autocomplete="off">
       <button class="btnred" id="snGo">LOOK UP</button>
@@ -91,14 +109,21 @@ main{width:min(1300px,100%);margin:0 auto;padding:34px 26px 70px}
 
   <div id="snReport" style="display:none">
     <section class="stats">
-      <div class="stat"><span>PRICE</span><b id="snPrice">—</b><em id="snChg">—</em></div>
-      <div class="stat"><span>MOVE TODAY</span><b id="snMove">—</b><em>Live quote</em></div>
-      <div class="stat"><span>MARKET CAP</span><b id="snCap">—</b><em>Company size</em></div>
-      <div class="stat"><span>P/E RATIO</span><b id="snPe">—</b><em>Price vs earnings</em></div>
+      <div class="stat"><span>PRICE <i class="tip" data-tip="What one share costs right now, based on the latest trade.">?</i></span><b id="snPrice">—</b><em id="snChg">—</em></div>
+      <div class="stat"><span>MOVE TODAY <i class="tip" data-tip="Percent change since yesterday's close. Moves over 5% in one day usually have a news driver.">?</i></span><b id="snMove">—</b><em>Live quote</em></div>
+      <div class="stat"><span>MARKET CAP <i class="tip" data-tip="Share price times the number of shares — the total price tag of the whole company.">?</i></span><b id="snCap">—</b><em>Company size</em></div>
+      <div class="stat"><span>P/E RATIO <i class="tip" data-tip="Price divided by yearly profit per share. A quick 'how expensive is this' gauge — compare it to similar companies, not to zero.">?</i></span><b id="snPe">—</b><em>Price vs earnings</em></div>
     </section>
+
+    <div id="snFlags"></div>
 
     <div class="layout">
       <div class="col">
+        <section class="panel">
+          <div class="phead"><div><h2>BEGINNER CHECKLIST</h2><p>Six questions to answer before going further — auto-filled from live data.</p></div><span class="tag live">START HERE</span></div>
+          <div class="pad" id="snChecklist"></div>
+        </section>
+
         <section class="panel">
           <div class="phead"><div><h2 id="snName">COMPANY</h2><p id="snMeta">—</p></div><span class="tag live" id="snTag">LIVE</span></div>
           <div class="pad" id="snPlain"></div>
@@ -151,16 +176,62 @@ const usd=n=>n==null||isNaN(n)?'—':'$'+Number(n).toFixed(2);
 const fmtPct=n=>n==null||isNaN(n)?'—':(n>=0?'+':'')+Number(n).toFixed(2)+'%';
 const fmtCap=n=>{n=Number(n);if(!n)return'—';const a=Math.abs(n);if(a>=1e12)return'$'+(n/1e12).toFixed(2)+'T';if(a>=1e9)return'$'+(n/1e9).toFixed(2)+'B';if(a>=1e6)return'$'+(n/1e6).toFixed(2)+'M';return'$'+n.toFixed(0)};
 const ago=ts=>{if(!ts)return'';const s=Date.now()/1000-ts;const h=Math.floor(s/3600);if(h<1)return'just now';if(h<24)return h+'h ago';return Math.floor(h/24)+'d ago'};
-const num=(label,val,cls)=>'<div class="number"><span>'+label+'</span><b'+(cls?' class="'+cls+'"':'')+'>'+val+'</b></div>';
-const fact=(k,v)=>'<div class="fact"><span>'+k+'</span><b>'+v+'</b></div>';
+const tipHtml=t=>t?' <i class="tip" data-tip="'+esc(t)+'">?</i>':'';
+const num=(label,val,cls,tip)=>'<div class="number"><span>'+label+tipHtml(tip)+'</span><b'+(cls?' class="'+cls+'"':'')+'>'+val+'</b></div>';
+const fact=(k,v,tip)=>'<div class="fact"><span>'+k+tipHtml(tip)+'</span><b>'+v+'</b></div>';
 const CHIPS=['AAPL','NVDA','MSFT','TSLA','PLTR','MRNA','SOFI','COIN'];
 
 CHIPS.forEach(sym=>{const b=document.createElement('button');b.textContent=sym;b.addEventListener('click',()=>snLoad(sym));$('snChips').appendChild(b)});
+
+document.addEventListener('click',e=>{
+  const t=e.target.closest('.tip');
+  document.querySelectorAll('.tip.on').forEach(x=>{if(x!==t)x.classList.remove('on')});
+  if(t)t.classList.toggle('on');
+});
 
 function sizeLabel(cap){if(cap==null)return'Unknown';if(cap>=200e9)return'Very large company';if(cap>=10e9)return'Large company';if(cap>=2e9)return'Mid-sized company';return'Small company — expect bigger swings'}
 function marginLabel(m){if(m==null)return'Unknown';if(m>=15)return'Healthy profits';if(m>=0)return'Profitable, thin cushion';return'Losing money right now'}
 function rangeLabel(pos){if(pos==null)return'Unknown';if(pos>=80)return'Near its 52-week high';if(pos<=20)return'Near its 52-week low';return'Mid-range for the year'}
 function volLabel(r){if(r==null)return'Unknown';if(r>=1.5)return'Much heavier than usual';if(r<=0.5)return'Quieter than usual';return'About normal'}
+
+function buildFlags(q,news){
+  const flags=[];
+  if(q.price!=null&&q.price<5)flags.push({t:'PENNY-STOCK TERRITORY',d:'Shares under $5 often have wide spreads and are easier to manipulate. Beginners usually do better starting with larger, steadier companies.'});
+  if(q.marketCap!=null&&q.marketCap<3e8)flags.push({t:'MICRO-CAP COMPANY',d:'Under $300M market cap. Companies this small can swing 20% on a single headline and reliable information about them is harder to find.'});
+  if(q.netMarginTTM!=null&&q.netMarginTTM<0)flags.push({t:'LOSING MONEY',d:'This company is not profitable right now. That can be acceptable for a growing business, but the stock depends on future hopes rather than current results.'});
+  if(q.changePercent!=null&&Math.abs(q.changePercent)>=15&&(!news||!news.length))flags.push({t:'HUGE MOVE, NO CLEAR NEWS',d:'A 15%+ one-day move without fresh headlines can mean speculation. Be extra careful about chasing it — moves like this often reverse.'});
+  if(q.volume!=null&&q.avgVolume!=null&&q.avgVolume>0&&q.volume/q.avgVolume<0.5)flags.push({t:'THIN TRADING TODAY',d:'Volume is well below average. Thinly traded stocks can be hard to sell at the price you see on screen.'});
+  if(q.pe!=null&&q.pe>60)flags.push({t:'EXPENSIVE EXPECTATIONS',d:'A P/E above 60 means investors pay a lot for each dollar of profit. Stocks like this can fall hard if growth disappoints.'});
+  return flags;
+}
+
+function renderFlags(q,news){
+  const flags=buildFlags(q,news);
+  const el=$('snFlags');
+  if(!flags.length){
+    el.innerHTML='<div class="flagsGood"><b>✓ NO MAJOR RED FLAGS</b> — nothing in the live data trips the beginner risk rules. That is not the same as safe — keep researching.</div>';
+    return;
+  }
+  el.innerHTML='<div class="flags"><div class="flagsHead">⚠ BEGINNER WATCH-OUTS ('+flags.length+')</div>'+flags.map(f=>'<div class="flag"><b>'+esc(f.t)+'</b>'+esc(f.d)+'</div>').join('')+'</div>';
+}
+
+function renderChecklist(sym,q,p,news){
+  const pct=q.changePercent;
+  const gapNote=(q.open!=null&&q.previousClose!=null&&Math.abs((q.open-q.previousClose)/q.previousClose*100)>=1)?' It gapped at the open — news likely arrived before the bell.':'';
+  const items=[
+    {q:'What does the company do?',a:p&&p.industry?((p.name||sym)+' — '+p.industry+'.'):'Not in the free profile data — use the Yahoo Finance link below.',ok:p&&p.industry?true:null},
+    {q:'Is it making money?',a:q.netMarginTTM==null?'Unknown from the free data.':(q.netMarginTTM>=0?'Yes — net margin of '+q.netMarginTTM.toFixed(1)+'%.':'No — it is losing money right now (net margin '+q.netMarginTTM.toFixed(1)+'%).'),ok:q.netMarginTTM==null?null:q.netMarginTTM>=0},
+    {q:'Is it big enough to be stable?',a:q.marketCap==null?'Unknown.':(q.marketCap>=2e9?fmtCap(q.marketCap)+' — reasonably established.':fmtCap(q.marketCap)+' — small company, expect sharp swings.'),ok:q.marketCap==null?null:q.marketCap>=2e9},
+    {q:'Why is it moving today?',a:'It is '+fmtPct(pct)+' today.'+gapNote,ok:null},
+    {q:'Is real news driving it?',a:news&&news.length?'Yes — recent headlines are listed below.':'No fresh headlines found — the move may be general market noise.',ok:news&&news.length?true:null},
+    {q:'Do you have an exit plan?',a:'Set a target and a stop before buying anything. Use the Plan Builder on the ORBIT screener page.',ok:null}
+  ];
+  $('snChecklist').innerHTML=items.map(it=>{
+    const cls=it.ok===true?'ok':it.ok===false?'bad':'mid';
+    const icon=it.ok===true?'✓':it.ok===false?'✗':'→';
+    return '<div class="checkItem"><div class="checkIcon '+cls+'">'+icon+'</div><div><b>'+esc(it.q)+'</b><p>'+esc(it.a)+'</p></div></div>';
+  }).join('');
+}
 
 function plainEnglish(sym,q,p,rev,ni,rangePos){
   const name=p&&p.name?p.name:sym;
@@ -229,21 +300,23 @@ function render(sym,q,p,news){
   let volRatio=null;
   if(q.volume!=null&&q.avgVolume!=null&&q.avgVolume>0)volRatio=q.volume/q.avgVolume;
 
+  renderFlags(q,news);
+  renderChecklist(sym,q,p,news);
   $('snPlain').innerHTML=plainEnglish(sym,q,p,rev,ni,rangePos);
   $('snNums').innerHTML=[
-    num('REVENUE (TTM EST.)',rev!=null?fmtCap(rev):'N/A'),
-    num('NET INCOME (TTM EST.)',ni!=null?fmtCap(ni):'N/A',ni!=null?(ni<0?'down':'up'):''),
-    num('EPS (TTM)',q.eps!=null?usd(q.eps):'N/A'),
-    num('NET MARGIN',q.netMarginTTM!=null?q.netMarginTTM.toFixed(1)+'%':'N/A'),
-    num('GROSS MARGIN',q.grossMarginTTM!=null?q.grossMarginTTM.toFixed(1)+'%':'N/A'),
-    num('DIVIDEND YIELD',q.divYield!=null&&q.divYield>0?(q.divYield*100).toFixed(2)+'%':'None / N/A')
+    num('REVENUE (TTM EST.)',rev!=null?fmtCap(rev):'N/A','','Total sales over the last 12 months, estimated from live per-share data. Steady growth matters more than one big quarter.'),
+    num('NET INCOME (TTM EST.)',ni!=null?fmtCap(ni):'N/A',ni!=null?(ni<0?'down':'up'):'','Profit after all costs over the last 12 months (estimated). Negative means the company spends more than it earns.'),
+    num('EPS (TTM)',q.eps!=null?usd(q.eps):'N/A','','Profit per share over the last 12 months. It connects the company\'s total profit to your single share.'),
+    num('NET MARGIN',q.netMarginTTM!=null?q.netMarginTTM.toFixed(1)+'%':'N/A','','Share of sales kept as profit. Above 15% is strong; below 0% means losing money.'),
+    num('GROSS MARGIN',q.grossMarginTTM!=null?q.grossMarginTTM.toFixed(1)+'%':'N/A','','What remains after the direct cost of what it sells. Software is usually high; retail and hardware lower.'),
+    num('DIVIDEND YIELD',q.divYield!=null&&q.divYield>0?(q.divYield*100).toFixed(2)+'%':'None / N/A','','Yearly cash payout as a percent of the share price. Many growth companies pay nothing and reinvest instead.')
   ].join('');
   $('snFacts').innerHTML=[
-    fact('COMPANY SIZE',sizeLabel(q.marketCap!=null?q.marketCap:null)),
-    fact('PROFITABILITY',marginLabel(q.netMarginTTM!=null?q.netMarginTTM:null)),
-    fact('52-WEEK POSITION',rangePos!=null?rangePos.toFixed(0)+'% of range — '+rangeLabel(rangePos):'Unknown'),
-    fact('TRADING VOLUME VS AVERAGE',volLabel(volRatio)),
-    fact('DAY RANGE',(q.dayLow!=null&&q.dayHigh!=null)?usd(q.dayLow)+' – '+usd(q.dayHigh):'Unknown')
+    fact('COMPANY SIZE',sizeLabel(q.marketCap!=null?q.marketCap:null),'Total market value of all shares. Bigger usually means steadier; smaller usually means bigger swings.'),
+    fact('PROFITABILITY',marginLabel(q.netMarginTTM!=null?q.netMarginTTM:null),'Whether the company keeps more money than it spends, based on net margin.'),
+    fact('52-WEEK POSITION',rangePos!=null?rangePos.toFixed(0)+'% of range — '+rangeLabel(rangePos):'Unknown','Where the price sits between its lowest and highest point of the last year. Buying near the high means expectations are already big.'),
+    fact('TRADING VOLUME VS AVERAGE',volLabel(volRatio),'How many shares changed hands today versus a normal day. Heavy volume means strong interest; thin volume can make selling harder.'),
+    fact('DAY RANGE',(q.dayLow!=null&&q.dayHigh!=null)?usd(q.dayLow)+' – '+usd(q.dayHigh):'Unknown','The lowest and highest prices the stock has hit today so far.')
   ].join('');
 
   $('snWhy').innerHTML=whyMoved(sym,q,news);
